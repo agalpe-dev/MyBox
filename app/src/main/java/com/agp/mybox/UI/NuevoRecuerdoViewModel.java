@@ -29,7 +29,7 @@ public class NuevoRecuerdoViewModel extends AndroidViewModel {
         //Comprobar si tiene título o poner por defecto
         if (titulo.isEmpty()) {titulo="Sin título";}
 
-        Recuerdo recuerdo=new Recuerdo(titulo,fecha,comentarios,0,1);
+        Recuerdo recuerdo=new Recuerdo(titulo,fecha,comentarios,1,1);
         try {
             mRepository.crearRecuerdo(recuerdo);
             Toast.makeText(getApplication(),"Recuerdo guardado!", Toast.LENGTH_SHORT).show();

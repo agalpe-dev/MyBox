@@ -30,5 +30,7 @@ public interface RecuerdoDAO {
     @Query("SELECT * FROM recuerdo")
     LiveData<List<Recuerdo>> leerTodosRecuerdos();
 
+    @Query("SELECT * FROM recuerdo WHERE favorito=1")
+    LiveData<List<Recuerdo>> leerTodosFavoritos();
 
 }

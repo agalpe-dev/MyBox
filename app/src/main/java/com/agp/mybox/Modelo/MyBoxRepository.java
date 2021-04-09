@@ -41,15 +41,6 @@ public class MyBoxRepository {
     //Variable local para pasar tipo long a mÃ©todos que lo necesitan para acceder a los id de los registros
     private long id;
 
-    /*
-    //Se declaran los DAO para tener acceso a ellos
-    private RecuerdoDAO mRecuerdoDAO;
-    private RecursoDAO mRecursoDAO;
-    private EtiquetaDAO mEtiquetaDAO;
-    private EtiquetarDAO mEtiquetarDAO;
-    private OcrDAO mOcrDAO;
-    private TipoRecuerdoDAO mTipoRecuerdoDAO;
-*/
 
       public MyBoxRepository(Application application) {
         //Instaciación de la base de datos y DAOs
@@ -81,6 +72,11 @@ public class MyBoxRepository {
     {
         recuerdos=mRecuerdoDAO.leerTodosRecuerdos();
         return recuerdos;
+    }
+
+    public LiveData<List<Recuerdo>> leerTodosFavoritos(){
+          recuerdos=mRecuerdoDAO.leerTodosFavoritos();
+          return recuerdos;
     }
 
 
