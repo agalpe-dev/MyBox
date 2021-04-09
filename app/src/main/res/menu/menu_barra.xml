@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/fragment_inicio"
+        android:title="@string/fragment_inicio"
+        app:showAsAction="never"
+        android:visible="false"
+        android:icon="@drawable/fragment_inicio"/>
+
+    <item
+        android:id="@+id/fragment_favoritos"
+        android:title="@string/fragment_favoritos"
+        app:showAsAction="never"
+        android:visible="false"
+        android:icon="@drawable/fragment_favoritos"/>
+
+    <item
+        android:id="@+id/fragment_buscar"
+        android:title="@string/fragment_buscar"
+        app:showAsAction="never"
+        android:visible="false"
+        android:icon="@drawable/fragment_buscar"/>
+
+    <item
+        android:id="@+id/fragment_ajustes"
+        android:icon="@drawable/fragment_ajustes"
+        android:title="@string/fragment_ajustes"
+        android:visible="false"
+        app:showAsAction="never" />
+</menu>

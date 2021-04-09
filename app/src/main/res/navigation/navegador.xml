@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navegador"
+    app:startDestination="@id/fragment_inicio">
+
+    <fragment
+        android:id="@+id/fragment_inicio"
+        android:name="com.agp.mybox.UI.Inicio.fragment_inicio"
+        android:label="Inicio"
+        tools:layout="@layout/fragment_inicio" />
+
+    <fragment
+        android:id="@+id/fragment_favoritos"
+        android:name="com.agp.mybox.UI.Favoritos.fragment_favoritos"
+        android:label="Favoritos"
+        tools:layout="@layout/fragment_favoritos" />
+
+    <fragment
+        android:id="@+id/fragment_buscar"
+        android:name="com.agp.mybox.UI.Buscar.fragment_buscar"
+        android:label="Buscar"
+        tools:layout="@layout/fragment_inicio" />
+
+    <fragment
+        android:id="@+id/fragment_ajustes"
+        android:name="com.agp.mybox.UI.Ajustes.fragment_ajustes"
+        android:label="Ajustes"
+        tools:layout="@layout/fragment_ajustes" />
+    <fragment
+        android:id="@+id/fragment_nuevoRecuerdo"
+        android:name="com.agp.mybox.UI.Recuerdo.fragment_nuevoRecuerdo"
+        android:label="NuevoRecuerdo"
+        tools:layout="@layout/fragment_nuevo_recuerdo" />
+
+</navigation>

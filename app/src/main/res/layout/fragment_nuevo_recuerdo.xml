@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".UI.Recuerdo.fragment_nuevoRecuerdo">
+<!--
+    <TextView
+        android:id="@+id/nuevoRecuerdoLB"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:textSize="30dp"
+        android:text="@string/etiquetaNuevoRcuerdo"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0"/>
+
+    <EditText
+        android:id="@+id/nuevoRecuerdoTitulo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/nuevoRecuerdoLB"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0"
+        />
+
+    <EditText
+        android:id="@+id/nuevoRecuerdoTxt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lines="4"
+        app:layout_constraintTop_toBottomOf="@id/nuevoRecuerdoTitulo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0"
+        android:autofillHints="Texto del recuerdo" />
+
+    <TextView
+        android:id="@+id/nuevoRecuerdoRecursoLB"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/etiquetaRecursos"
+        app:layout_constraintTop_toBottomOf="@id/nuevoRecuerdoTxt"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0.1"/>
+
+    <ImageButton
+        android:id="@+id/botonFoto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/nuevoRecuerdoRecursoLB"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0.1"
+        app:layout_constraintHorizontal_bias="0.25"/>
+
+    <ImageButton
+        android:id="@+id/botonArchivo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/nuevoRecuerdoRecursoLB"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0.1"
+        app:layout_constraintHorizontal_bias="0.75"/>
+-->
+</androidx.constraintlayout.widget.ConstraintLayout>

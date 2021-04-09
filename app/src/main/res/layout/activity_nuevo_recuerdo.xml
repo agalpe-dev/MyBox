@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".UI.NuevoRecuerdoActivity"
+    >
+
+    <!--TextView
+        android:id="@+id/nuevoRecuerdoLB"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:textSize="30dp"
+        android:text="@string/etiquetaNuevoRcuerdo"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0"/-->
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tl_titulo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+
+    <EditText
+        android:id="@+id/nuevoRecuerdoTitulo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/nuevoRecuerdoTitulo"
+        android:maxLines="1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <EditText
+        android:id="@+id/nuevoRecuerdoTxt"
+        android:hint="@string/nuevoRecuerdoComentarios"
+        android:paddingTop="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lines="3"
+        android:maxLines="3"
+        app:layout_constraintTop_toBottomOf="@id/tl_titulo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0.05"
+        android:autofillHints="Texto del recuerdo" />
+    <EditText
+        android:id="@+id/nuevoRecuerdoEtiquetas"
+        android:hint="@string/nuevoRecuerdoEtiquetas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/nuevoRecuerdoTxt"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0"/>
+
+
+    <ImageButton
+        android:id="@+id/botonFoto"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/camara"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/nuevoRecuerdoEtiquetas"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0.1"
+        app:layout_constraintHorizontal_bias="0.25"/>
+
+    <ImageButton
+        android:id="@+id/botonArchivo"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/nuevoRecuerdoEtiquetas"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0.1"
+        app:layout_constraintHorizontal_bias="0.75"
+        android:contentDescription="TODO" />
+    <ListView
+        android:id="@+id/nuevoRecuerdoLista"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        app:layout_constraintTop_toBottomOf="@id/botonFoto"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+    <!--Button
+        android:id="@+id/boton_ok_recuerdo"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:text="@string/boton_ok"
+        android:background="@drawable/boton_selector"
+        android:textColor="@color/colorPrimary"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0.85"
+        />
+    <Button
+        android:id="@+id/boton_cancelar_recuerdo"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:text="@string/boton_cancelar"
+        android:background="@drawable/boton_cancelar_selector"
+        android:textColor="@android:color/holo_red_dark"
+        app:layout_constraintTop_toBottomOf="@id/boton_ok_recuerdo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+
+        /-->
+
+</androidx.constraintlayout.widget.ConstraintLayout>
