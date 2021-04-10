@@ -15,4 +15,11 @@
     <string name="nuevoRecuerdoTitulo">Título</string>
     <string name="nuevoRecuerdoComentarios">Comentarios</string>
     <string name="nuevoRecuerdoEtiquetas">Etiquetas (separadas por comas)</string>
+    <string name="noFavoritos">No hay favoritos</string>
+    <string name="descripcionBotonFoto">Foto</string>
+    <string name="descripcionBotonArchivo">Archivo</string>
+    <string name="radioTicket">Ticket</string>
+    <string name="radioOtros">Otro</string>
+    <string name="radioEntrada">Entrada</string>
+    <string name="radioFactura">Factura</string>
 </resources>

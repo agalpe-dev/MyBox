@@ -1,6 +1,7 @@
 package com.agp.mybox.UI;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuInflater;
 import android.view.Menu;
 
@@ -50,12 +51,16 @@ public class MainActivity extends AppCompatActivity {
         //Problemas, se usa la forma anterior
         //navController= Navigation.findNavController(this, R.id.nav_host_fragment);
         //NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+
+        //Comprobar que existen las rutas
+        mViewModel.comprobarRutas();
+
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         //Para poder usar SmoothBottomBar con Navigator (NavController)
-        //TODO: eliminar menú de la vista
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_barra, menu);
         barra_menu.setupWithNavController(menu,navController);

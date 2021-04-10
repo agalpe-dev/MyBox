@@ -15,8 +15,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.agp.mybox.Adaptadores.recuerdoAdapter;
 import com.agp.mybox.Modelo.POJO.Recuerdo;
@@ -64,10 +66,11 @@ public class fragment_inicio extends Fragment {
 
         //ReciclerView: Acceso a widget, creación del layoutmanager (vertical), inicializar y setear adaptador
         mRV=(RecyclerView)v.findViewById(R.id.rvRecuerdos);
-        LinearLayoutManager llm=new LinearLayoutManager(getActivity());
+        /*LinearLayoutManager llm=new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
-        mRV.setLayoutManager(llm);
-        mRV.setHasFixedSize(true);
+        */
+        StaggeredGridLayoutManager sglm=new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
+        mRV.setLayoutManager(sglm);
         //adaptador=new recuerdoAdapter();
         mRV.setAdapter(adaptador);
 

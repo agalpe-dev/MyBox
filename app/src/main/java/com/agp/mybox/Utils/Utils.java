@@ -1,9 +1,8 @@
 package com.agp.mybox.Utils;
 
-import android.os.Debug;
+
 import android.util.Log;
 
-import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -15,10 +14,6 @@ import java.util.concurrent.TimeUnit;
  * agalpe@gmail.com
  */
 public class Utils {
-    private final String ALMACEN="box";
-    private final String FOTOS="camera";
-    private final String PDF="pdf";
-    private final String IMAGENES="images";
 
     public long getTimestamp(){
         //long t= TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()); //opción para trabajar con segundos
@@ -53,4 +48,5 @@ public class Utils {
         }
         return etiquetas;
     }
+
 }

@@ -5,15 +5,11 @@
     android:layout_height="match_parent"
     tools:context=".UI.Favoritos.fragment_favoritos">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Favoritos" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvFavoritos"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/tarjeta_recuerdo"/>
+        tools:listitem="@layout/tarjeta_recuerdo"
+        android:tooltipText="@string/noFavoritos"/>
 
 </FrameLayout>

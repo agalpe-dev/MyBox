@@ -7,6 +7,7 @@ import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -81,7 +82,6 @@ public class recuerdoAdapter extends RecyclerView.Adapter<recuerdoAdapter.recuer
 
             //setear eventos
             //bFavorito.setOnClickListener(this::);
-
 
         }
     }
