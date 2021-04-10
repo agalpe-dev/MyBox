@@ -1,5 +1,9 @@
 package com.agp.mybox.Utils;
 
+import android.os.Debug;
+import android.util.Log;
+
+import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -17,13 +21,26 @@ public class Utils {
     private final String IMAGENES="images";
 
     public long getTimestamp(){
-        //se devuelve un timestamp en segundos
-        return TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
+        //long t= TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()); //opción para trabajar con segundos
+        //devuelve long en milisegundos
+        long t= System.currentTimeMillis();
+        Log.d("TiempoSegundos",Long.toString(t));
+        return t;
     }
 
     public String timestampToFecha(long t){
+        //Declarar formato en que queremos convertir el timestampo
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-        return formato.format(new Date(t));
+
+        //comprobar que el long está en milisegundos.
+        String s=Long.toString(t);
+        Log.d("TamañoT", Integer.toString(s.length()));
+        if (s.length()==10){
+            t=TimeUnit.SECONDS.toMillis(t); //convertir segundos a milisegundos
+        }
+        String date=formato.format(new Date(t));
+        Log.d("TiempoFormato", date);
+        return date;
     }
 
     public List<String> etiquetasLista(String etiquetasLinea){

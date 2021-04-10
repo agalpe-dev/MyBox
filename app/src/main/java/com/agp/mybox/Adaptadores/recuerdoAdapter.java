@@ -49,8 +49,7 @@ public class recuerdoAdapter extends RecyclerView.Adapter<recuerdoAdapter.recuer
 
         holder.titulo.setText(recuerdo.getTitulo());
         holder.comentarios.setText(recuerdo.getComentario());
-        //holder.fecha.setText(utils.timestampToFecha(recuerdo.getFecha()));
-        holder.fecha.setText(Long.toString(recuerdo.getFecha())+" "+  recuerdo.getFecha());
+        holder.fecha.setText(utils.timestampToFecha(recuerdo.getFecha()));
 
     }
 
