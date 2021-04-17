@@ -13,7 +13,7 @@ import androidx.room.PrimaryKey;
 )
 public class Recurso {
     @PrimaryKey(autoGenerate = true)
-    private long id;
+    private int id;
 
     @NonNull
     private long fecha;
@@ -24,24 +24,24 @@ public class Recurso {
     private String uri;
 
     @NonNull
-    private long idRecuerdo;
+    private int idRecuerdo;
 
     public Recurso(){
 
     }
 
     @Ignore
-    public Recurso(long fecha, long tamano, String uri, long idRecuerdo){
+    public Recurso(long fecha, long tamano, String uri, int idRecuerdo){
         this.fecha=fecha;
         this.tamano=tamano;
         this.uri=uri;
         this.idRecuerdo=idRecuerdo;
     }
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) { this.id = id; }
+    public void setId(int id) { this.id = id; }
 
     public long getFecha() {
         return fecha;
@@ -68,11 +68,11 @@ public class Recurso {
         this.uri = uri;
     }
 
-    public long getIdRecuerdo() {
+    public int getIdRecuerdo() {
         return idRecuerdo;
     }
 
-    public void setIdRecuerdo(long idRecuerdo) {
+    public void setIdRecuerdo(int idRecuerdo) {
         this.idRecuerdo = idRecuerdo;
     }
 }

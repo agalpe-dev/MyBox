@@ -9,16 +9,22 @@
 
     <RadioGroup
         android:id="@+id/radio_grupo"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0"
         android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp">
+        android:layout_marginEnd="32dp" >
         <RadioButton
             android:id="@+id/radio1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/radioTicket"/>
+            android:text="@string/radioTicket"
+            android:checked="true" />
         <RadioButton
             android:id="@+id/radio2"
             android:layout_width="wrap_content"
@@ -40,11 +46,11 @@
         android:id="@+id/tl_titulo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/radio_grupo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.05"
+        app:layout_constraintVertical_bias="0.02"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
 
@@ -54,6 +60,7 @@
         android:layout_height="wrap_content"
         android:hint="@string/nuevoRecuerdoTitulo"
         android:maxLines="1"
+        android:lines="1"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -71,7 +78,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.04"
+        app:layout_constraintVertical_bias="0.02"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
     <EditText
@@ -99,7 +106,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.04"
+        app:layout_constraintVertical_bias="0.02"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
     <EditText
@@ -141,39 +148,17 @@
         app:layout_constraintVertical_bias="0.1"
         app:layout_constraintHorizontal_bias="0.75"
         android:contentDescription="@string/descripcionBotonArchivo" />
-    <ListView
-        android:id="@+id/nuevoRecuerdoLista"
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvRecursosmini"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/botonFoto"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
-    <!--Button
-        android:id="@+id/boton_ok_recuerdo"
-        android:layout_width="180dp"
-        android:layout_height="wrap_content"
-        android:text="@string/boton_ok"
-        android:background="@drawable/boton_selector"
-        android:textColor="@color/colorPrimary"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.85"
-        />
-    <Button
-        android:id="@+id/boton_cancelar_recuerdo"
-        android:layout_width="180dp"
-        android:layout_height="wrap_content"
-        android:text="@string/boton_cancelar"
-        android:background="@drawable/boton_cancelar_selector"
-        android:textColor="@android:color/holo_red_dark"
-        app:layout_constraintTop_toBottomOf="@id/boton_ok_recuerdo"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0.1"
+        tools:listitem="@layout/tarjeta_recurso_mini"/>
 
-        /-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

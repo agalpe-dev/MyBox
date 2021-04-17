@@ -39,7 +39,7 @@ public class MyBoxRepository {
     private TipoRecuerdoDAO mTipoRecuerdoDAO;
 
     //Variable local para pasar tipo long a mÃ©todos que lo necesitan para acceder a los id de los registros
-    private long id;
+    private int id;
 
 
       public MyBoxRepository(Application application) {
@@ -89,11 +89,24 @@ public class MyBoxRepository {
         });
     }
 
-    public long getId() {
+    public int getTipoRecuerdoID(String tiporecuerdo){
+          return mTipoRecuerdoDAO.getTipoRecuerdoID(tiporecuerdo);
+    }
+
+    public void favoritoON(int idRecuerdo){
+          mRecuerdoDAO.favoritoON(idRecuerdo);
+    }
+
+    public void favoritoOFF(int idRecuerdo){
+          mRecuerdoDAO.favoritoOFF(idRecuerdo);
+    }
+
+
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 }

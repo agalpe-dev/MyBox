@@ -6,6 +6,7 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Transaction;
 import androidx.room.Update;
 
 import com.agp.mybox.Modelo.POJO.Recuerdo;
@@ -15,6 +16,7 @@ import java.util.List;
 @Dao
 public interface RecuerdoDAO {
 
+    @Transaction
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     public void insertarRecuerdo(Recuerdo recuerdo);
 
@@ -32,5 +34,11 @@ public interface RecuerdoDAO {
 
     @Query("SELECT * FROM recuerdo WHERE favorito=1")
     LiveData<List<Recuerdo>> leerTodosFavoritos();
+
+    @Query("UPDATE recuerdo SET favorito=1 WHERE id = :idRecuerdo")
+    void favoritoON(int idRecuerdo);
+
+    @Query("UPDATE recuerdo SET favorito=0 WHERE id = :idRecuerdo")
+    void favoritoOFF(int idRecuerdo);
 
 }

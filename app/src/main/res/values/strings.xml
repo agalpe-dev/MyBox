@@ -5,7 +5,6 @@
     <string name="fragment_favoritos">Favoritos</string>
     <string name="fragment_buscar">Buscar</string>
     <string name="fragment_ajustes">Ajustes</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="etiquetaNuevoRcuerdo">Nuevo Recuerdo</string>
     <string name="etiquetaRecursos">Añade recursos</string>
@@ -22,4 +21,5 @@
     <string name="radioOtros">Otro</string>
     <string name="radioEntrada">Entrada</string>
     <string name="radioFactura">Factura</string>
+    <string name="nuevoRecuerdoActivity">Nuevo Recuerdo</string>
 </resources>

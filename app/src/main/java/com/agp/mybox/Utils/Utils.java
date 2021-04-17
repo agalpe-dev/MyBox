@@ -1,6 +1,9 @@
 package com.agp.mybox.Utils;
 
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.util.Log;
 
 import java.text.SimpleDateFormat;
@@ -47,6 +50,14 @@ public class Utils {
             etiquetas.add(p);
         }
         return etiquetas;
+    }
+
+    public Bitmap rotarImagen(Bitmap bitmap, float angulo){
+        Matrix matrix=new Matrix();
+        matrix.preRotate(angulo);
+        Bitmap nuevaImagen=Bitmap.createBitmap(bitmap,0,0,bitmap.getWidth(),bitmap.getHeight(),matrix,true);
+        bitmap.recycle();
+        return nuevaImagen;
     }
 
 }

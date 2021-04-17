@@ -16,31 +16,31 @@ import androidx.room.Ignore;
 )
 
 public class Etiquetar {
-    private long idRecuerdo, idEtiqueta;
+    private int idRecuerdo, idEtiqueta;
 
     public Etiquetar(){
 
     }
 
     @Ignore
-    public Etiquetar(long idRecuerdo, long idEtiqueta){
+    public Etiquetar(int idRecuerdo, int idEtiqueta){
         this.idEtiqueta=idEtiqueta;
         this.idRecuerdo=idRecuerdo;
     }
 
-    public long getIdRecuerdo() {
+    public int getIdRecuerdo() {
         return idRecuerdo;
     }
 
-    public void setIdRecuerdo(long idRecuerdo) {
+    public void setIdRecuerdo(int idRecuerdo) {
         this.idRecuerdo = idRecuerdo;
     }
 
-    public long getIdEtiqueta() {
+    public int getIdEtiqueta() {
         return idEtiqueta;
     }
 
-    public void setIdEtiqueta(long idEtiqueta) {
+    public void setIdEtiqueta(int idEtiqueta) {
         this.idEtiqueta = idEtiqueta;
     }
 }

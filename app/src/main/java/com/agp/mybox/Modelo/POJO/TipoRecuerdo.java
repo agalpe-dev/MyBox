@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "tiporecuerdo")
 public class TipoRecuerdo {
     @PrimaryKey(autoGenerate = true)
-    private long id;
+    private int id;
 
     @NonNull
     private String tipoRecuerdo;
@@ -22,11 +22,11 @@ public class TipoRecuerdo {
         this.tipoRecuerdo=tipoRecuerdo;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) { this.id = id; }
+    public void setId(int id) { this.id = id; }
 
     @NonNull
     public String getTipoRecuerdo() {

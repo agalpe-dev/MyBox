@@ -28,6 +28,7 @@ public class recuerdoAdapter extends RecyclerView.Adapter<recuerdoAdapter.recuer
     private List<Recuerdo> recuerdos=new ArrayList<>();
     Utils utils=new Utils();
 
+
     /*
     //Recibir List con los datos
     public recuerdoAdapter(List<Recuerdo> recuerdos) {
@@ -51,6 +52,22 @@ public class recuerdoAdapter extends RecyclerView.Adapter<recuerdoAdapter.recuer
         holder.titulo.setText(recuerdo.getTitulo());
         holder.comentarios.setText(recuerdo.getComentario());
         holder.fecha.setText(utils.timestampToFecha(recuerdo.getFecha()));
+        // Si el valor de favorito en el Recuerdo es 1, es favorito.
+        // Se activa el checkbox o no
+        if(recuerdo.getFavorito()==1){
+            holder.bFavorito.setChecked(true);
+        }else{
+            holder.bFavorito.setChecked(false);
+        }
+        /* TODO. Implementar el listener para la acción: ViewModel?
+        // Listener para actualizar el valor de favorito
+        holder.bFavorito.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });*/
+
 
     }
 
@@ -63,6 +80,7 @@ public class recuerdoAdapter extends RecyclerView.Adapter<recuerdoAdapter.recuer
         this.recuerdos=recuerdos;
         notifyDataSetChanged();
     }
+
 
     public static class recuerdoViewHolder extends RecyclerView.ViewHolder{
         private TextView titulo, etiquetas, comentarios, fecha;

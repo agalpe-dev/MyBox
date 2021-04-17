@@ -9,6 +9,7 @@ import androidx.room.RoomDatabase;
 import com.agp.mybox.Modelo.DAO.*;
 import com.agp.mybox.Modelo.POJO.*;
 
+import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -46,10 +47,32 @@ public abstract class AppDataBase extends RoomDatabase {
                     INSTANCE= Room.databaseBuilder(context.getApplicationContext(),
                             AppDataBase.class, "base_datos")
                             .fallbackToDestructiveMigration()
+                            .allowMainThreadQueries()
                             .build();
+                    //INSTANCE.tiposRecuerdoInicial();
                 }
             }
         }
     return INSTANCE;
+    }
+
+    private void tiposRecuerdoInicial(){
+        runInTransaction(new Runnable() {
+            @Override
+            public void run() {
+                if(getTipoRecuerdoDAO().contar()<4) {
+                    getTipoRecuerdoDAO().borrar();
+                    ArrayList<TipoRecuerdo> tipos = new ArrayList<TipoRecuerdo>();
+                    tipos.add(new TipoRecuerdo("ticket"));
+                    tipos.add(new TipoRecuerdo("factura"));
+                    tipos.add(new TipoRecuerdo("entrada"));
+                    tipos.add(new TipoRecuerdo("otro"));
+
+                    for (TipoRecuerdo t : tipos) {
+                        getTipoRecuerdoDAO().insertarTipoRecuerdo(t);
+                    }
+                }
+            }
+        });
     }
 }

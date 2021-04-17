@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <files-path
+        name="fotos"
+        path="box/camara"/>
+    <files-path
+        name="pdf"
+        path="box/pdf"/>
+    <files-path
+        name="imagenes"
+        path="box/imagen"/>
+    <files-path
+        name="otros"
+        path="box/otros"/>
+
+</paths>

@@ -23,8 +23,8 @@ public interface RecursoDAO {
     public void borrarRecurso(Recurso recurso);
 
     @Query("SELECT * FROM recurso WHERE id = :id")
-    public LiveData<List<Recurso>> listarRecurso(long id);
+    public LiveData<List<Recurso>> listarRecurso(int id);
 
     @Query("SELECT * FROM recurso WHERE idRecuerdo = :id")
-    public LiveData<List<Recurso>> RecursosDeRecuerdo(long id);
+    public LiveData<List<Recurso>> RecursosDeRecuerdo(int id);
 }

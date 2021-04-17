@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -36,6 +37,18 @@ public class fragment_inicio extends Fragment {
     FloatingActionButton mFAB;
     RecyclerView mRV;
     recuerdoAdapter adaptador=new recuerdoAdapter();
+    ItemTouchHelper.SimpleCallback itemTouchHelperSimpleCallBack = new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.RIGHT) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            //Eliminar
+        }
+    };
+    ItemTouchHelper itemTouchHelper=new ItemTouchHelper(itemTouchHelperSimpleCallBack);
 
     public static fragment_inicio newInstance() {
         return new fragment_inicio();
@@ -73,6 +86,10 @@ public class fragment_inicio extends Fragment {
         mRV.setLayoutManager(sglm);
         //adaptador=new recuerdoAdapter();
         mRV.setAdapter(adaptador);
+        itemTouchHelper.attachToRecyclerView(mRV);
+
+
+
 
         //observar el livedata que proporciona el viewmodel
        mViewModel.getTodosRecuerdos().observe(getActivity(), new Observer<List<Recuerdo>>() {

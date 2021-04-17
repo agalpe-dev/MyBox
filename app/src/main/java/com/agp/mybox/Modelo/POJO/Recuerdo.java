@@ -16,7 +16,7 @@ import androidx.room.PrimaryKey;
 public class Recuerdo {
     @PrimaryKey(autoGenerate = true)
     @NonNull
-    private long id;
+    private int id;
 
     @NonNull
     @ColumnInfo(name="fecha", defaultValue = "CURRENT_TIMESTAMP")
@@ -25,13 +25,13 @@ public class Recuerdo {
     private String titulo;
     private String comentario;
     private int favorito;
-    private long idTipoRecuerdo;
+    private int idTipoRecuerdo;
 
     public Recuerdo() {
     }
 
     @Ignore
-    public Recuerdo(String titulo, long fecha, String comentario, int favorito, long idTipoRecuerdo){
+    public Recuerdo(String titulo, long fecha, String comentario, int favorito, int idTipoRecuerdo){
         this.titulo=titulo;
         this.fecha=fecha;
         this.comentario=comentario;
@@ -39,11 +39,11 @@ public class Recuerdo {
         this.idTipoRecuerdo=idTipoRecuerdo;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) { this.id = id; }
+    public void setId(int id) { this.id = id; }
 
     public String getTitulo() {
         return titulo;
@@ -77,11 +77,11 @@ public class Recuerdo {
         this.favorito = favorito;
     }
 
-    public long getIdTipoRecuerdo() {
+    public int getIdTipoRecuerdo() {
         return idTipoRecuerdo;
     }
 
-    public void setIdTipoRecuerdo(long idTipoRecuerdo) {
+    public void setIdTipoRecuerdo(int idTipoRecuerdo) {
         this.idTipoRecuerdo = idTipoRecuerdo;
     }
 

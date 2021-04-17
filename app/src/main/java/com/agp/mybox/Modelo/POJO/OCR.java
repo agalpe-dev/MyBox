@@ -14,29 +14,29 @@ import androidx.room.PrimaryKey;
 
 public class OCR {
     @PrimaryKey(autoGenerate = true)
-    private long id;
+    private int id;
 
     @NonNull
     private String texto;
 
     @NonNull
-    private long idRecuerdo;
+    private int idRecuerdo;
 
     public OCR(){
 
     }
 
     @Ignore
-    public OCR(String texto, long idRecuerdo){
+    public OCR(String texto, int idRecuerdo){
         this.texto=texto;
         this.idRecuerdo=idRecuerdo;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) { this.id = id; }
+    public void setId(int id) { this.id = id; }
 
     @NonNull
     public String getTexto() {
@@ -47,11 +47,11 @@ public class OCR {
         this.texto = texto;
     }
 
-    public long getIdRecuerdo() {
+    public int getIdRecuerdo() {
         return idRecuerdo;
     }
 
-    public void setIdRecuerdo(long idRecuerdo) {
+    public void setIdRecuerdo(int idRecuerdo) {
         this.idRecuerdo = idRecuerdo;
     }
 }

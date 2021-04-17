@@ -46,7 +46,7 @@
             android:id="@+id/botonFavorito"
             android:layout_width="32dp"
             android:layout_height="wrap_content"
-            android:button="@drawable/botonfavorito_off"
+            android:button="@drawable/selector_boton_favorito"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1"

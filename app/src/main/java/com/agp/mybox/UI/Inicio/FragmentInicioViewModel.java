@@ -25,6 +25,7 @@ public class FragmentInicioViewModel extends AndroidViewModel {
     private LiveData<List<Recuerdo>> liveRecuerdos;
 
 
+
     public FragmentInicioViewModel(@NonNull Application application) {
         super(application);
         repository=new MyBoxRepository(application);

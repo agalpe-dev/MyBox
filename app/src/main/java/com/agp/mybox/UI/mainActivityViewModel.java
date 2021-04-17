@@ -1,6 +1,7 @@
 package com.agp.mybox.UI;
 
 import android.app.Application;
+import android.provider.AlarmClock;
 import android.provider.ContactsContract;
 import android.util.Log;
 
@@ -13,6 +14,7 @@ import com.agp.mybox.Modelo.POJO.Recuerdo;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -23,11 +25,15 @@ import java.util.concurrent.Executors;
  * agalpe@gmail.com
  */
 public class mainActivityViewModel extends AndroidViewModel {
-    private final String ALMACEN="/box";
-    private final String FOTOS="/camera";
-    private final String PDF="/pdf";
-    private final String IMAGENES="/images";
-    private final String RUTA=getApplication().getApplicationInfo().dataDir;
+    private final String APP_RUTA=getApplication().getApplicationInfo().dataDir;
+    //private final String APP_RUTA=getApplication().getFilesDir().toString();
+    private final String ALMACEN=APP_RUTA+"/box";
+    private final String FOTOS=ALMACEN+"/camera";
+    private final String PDF=ALMACEN+"/pdf";
+    private final String IMAGENES=ALMACEN+"/images";
+    private final String OTROS= ALMACEN+"/otros";
+    //private final String[] RUTAS={ALMACEN,FOTOS,PDF,IMAGENES,FOTOS};
+
 
     //Executor para realizar algunas funciones en otro hilo
     ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -57,25 +63,45 @@ public class mainActivityViewModel extends AndroidViewModel {
      */
 
     public void comprobarRutas(){
-        File dir=new File(RUTA+ ALMACEN);
-        if(dir.exists()){
-            Log.d("ANTONIO", "Existe "+dir.getAbsolutePath().toString());
-        }else{
-            Runnable runnable=new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        dir.mkdir();
+        //Creanción de un nuevo hilo para la comprobación y creación de rutas
+        Runnable runnable=new Runnable() {
+            @Override
+            public void run() {
+                // Comprobar si las rutas existen. si es así, se finaliza, caso contrario
+                // se comprueban y crean una a una
+                File rutaFotos=new File(getApplication().getFilesDir(),"box/camara");
+                File rutaPdf=new File(getApplication().getFilesDir(),"box/pdf");
+                File rutaImagen=new File(getApplication().getFilesDir(),"box/imagen");
+                File rutaOtros=new File(getApplication().getFilesDir(),"box/otros");
+                //ArrayList con las rutas (Archivos)
+                ArrayList<File> rutas=new ArrayList<File>();
+                rutas.add(rutaFotos);
+                rutas.add(rutaPdf);
+                rutas.add(rutaImagen);
+                rutas.add(rutaOtros);
 
-                    }catch (Exception e){
-                        e.printStackTrace();
+                if (rutaFotos.exists() && rutaPdf.exists() && rutaImagen.exists() && rutaOtros.exists()) {
+                    return;
+                }
+
+                //Recorrer array de rutas comprobando si existen y se crean en caso que existan
+                for (File f:rutas){
+                    if(!f.exists()) {
+                        try {
+                            f.mkdirs();
+                            Log.d("ANTONIO","Creada ruta: "+f.getPath().toString());
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Log.d("ANTONIO", "Error creando "+f.getPath().toString());
+                        }
                     }
                 }
-            };
-            executor.submit(runnable);
-            Log.d("ANTONIO", "Ruta creada "+dir.getAbsolutePath().toString());
+                Log.d("ANTONIO", "Todas las rutas creadas ok");
+            }
+        };
+        executor.submit(runnable);
+        executor.shutdown();
+
         }
-
-    }
-
 }
