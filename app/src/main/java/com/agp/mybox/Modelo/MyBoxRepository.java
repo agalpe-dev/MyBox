@@ -89,6 +89,10 @@ public class MyBoxRepository {
         });
     }
 
+    public void borrarRecuerdo (Recuerdo recuerdo){
+        mRecuerdoDAO.borrarRecuerdo(recuerdo);
+    }
+
     public int getTipoRecuerdoID(String tiporecuerdo){
           return mTipoRecuerdoDAO.getTipoRecuerdoID(tiporecuerdo);
     }

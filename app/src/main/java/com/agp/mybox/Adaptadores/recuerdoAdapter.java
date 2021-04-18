@@ -52,6 +52,7 @@ public class recuerdoAdapter extends RecyclerView.Adapter<recuerdoAdapter.recuer
         holder.titulo.setText(recuerdo.getTitulo());
         holder.comentarios.setText(recuerdo.getComentario());
         holder.fecha.setText(utils.timestampToFecha(recuerdo.getFecha()));
+        holder.idRegistro.setText(Integer.toString(recuerdo.getId()));
         // Si el valor de favorito en el Recuerdo es 1, es favorito.
         // Se activa el checkbox o no
         if(recuerdo.getFavorito()==1){
@@ -83,7 +84,7 @@ public class recuerdoAdapter extends RecyclerView.Adapter<recuerdoAdapter.recuer
 
 
     public static class recuerdoViewHolder extends RecyclerView.ViewHolder{
-        private TextView titulo, etiquetas, comentarios, fecha;
+        private TextView titulo, etiquetas, comentarios, fecha, idRegistro;
         private ImageView imagen;
         private ImageButton bBorrar;
         private CheckBox bFavorito;
@@ -96,6 +97,7 @@ public class recuerdoAdapter extends RecyclerView.Adapter<recuerdoAdapter.recuer
             fecha=(TextView)itemView.findViewById(R.id.tarjetaFecha);
             imagen=(ImageView)itemView.findViewById(R.id.tarjetaImagen);
             bFavorito=(CheckBox) itemView.findViewById(R.id.botonFavorito);
+            idRegistro=(TextView) itemView.findViewById(R.id.txtIdRegistro);
             //bBorrar=(ImageButton) itemView.findViewById(R.id.botonBorrar);
 
             //setear eventos

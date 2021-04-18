@@ -22,4 +22,12 @@
     <string name="radioEntrada">Entrada</string>
     <string name="radioFactura">Factura</string>
     <string name="nuevoRecuerdoActivity">Nuevo Recuerdo</string>
+    <string name="ajustes_confirmacion">Confirmar acciones</string>
+    <string name="ajustes_bt_confirmacion">Activar avisos</string>
+    <string name="ajustes_backup">Copias de seguridad</string>
+    <string name="ajustes_crear_backup">Crear copia de seguridad</string>
+    <string name="hacerBackup">Crear Backup</string>
+    <string name="avisoBorrar">¿Estás seguro que deseas eliminar el recuerdo?</string>
+    <string name="borrar">Borrar</string>
+    <string name="tituloBorrar">Borrar Recuerdo</string>
 </resources>

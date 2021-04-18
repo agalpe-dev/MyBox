@@ -3,6 +3,8 @@
  */
 package com.agp.mybox.UI.Inicio;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -27,6 +29,7 @@ import com.agp.mybox.R;
 import com.agp.mybox.UI.NuevoRecuerdoActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Observable;
@@ -37,6 +40,18 @@ public class fragment_inicio extends Fragment {
     FloatingActionButton mFAB;
     RecyclerView mRV;
     recuerdoAdapter adaptador=new recuerdoAdapter();
+    List<Recuerdo> listaTrabajo = new ArrayList<>();
+
+    Observer<List<Recuerdo>> listaRecuerdos=new Observer<List<Recuerdo>>() {
+        @Override
+        public void onChanged(List<Recuerdo> recuerdos) {
+            adaptador.setRecuerdos(recuerdos);
+            listaTrabajo=recuerdos;
+        }
+    };
+
+    // Para la gestión del deslizamiento y borrado en RecyclerView
+    // Se define deslizamiento a la derecha para eliminar
     ItemTouchHelper.SimpleCallback itemTouchHelperSimpleCallBack = new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.RIGHT) {
         @Override
         public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
@@ -45,7 +60,32 @@ public class fragment_inicio extends Fragment {
 
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-            //Eliminar
+            // Obtener posición de la tarjeta deslizada
+            final int posicion=viewHolder.getAdapterPosition();
+
+            // Eliminar a la derecha
+            if (direction==ItemTouchHelper.RIGHT){
+                AlertDialog.Builder aviso=new AlertDialog.Builder(getContext());
+                    aviso.setTitle(R.string.tituloBorrar);
+                    aviso.setMessage(R.string.avisoBorrar);
+                    aviso.setPositiveButton(R.string.borrar, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            adaptador.notifyItemRemoved(posicion);
+                            // Crear Recuerdo con el recuerdo de lista a eliminar y llamar al ViewHolder
+                            Recuerdo r= listaTrabajo.get(posicion);
+                            mViewModel.borrarRecuerdo(r);
+                        }
+                    })
+                            .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    adaptador.notifyDataSetChanged();
+                                    return;
+                                }
+                            }).show();
+
+            }
         }
     };
     ItemTouchHelper itemTouchHelper=new ItemTouchHelper(itemTouchHelperSimpleCallBack);
@@ -91,6 +131,11 @@ public class fragment_inicio extends Fragment {
 
 
 
+
+        mViewModel.getTodosRecuerdos().observe(getActivity(),listaRecuerdos);
+
+        /* FUNCIONA BIEN. SE COMENTA PARA PROBAR ARRIBA LO MISMO PERO DECLARANDO EL OBSERVER
+        POR SEPARADO Y PODER USARLO LUEGO PARA EL SWIPE DEL RECYCLERVIEW
         //observar el livedata que proporciona el viewmodel
        mViewModel.getTodosRecuerdos().observe(getActivity(), new Observer<List<Recuerdo>>() {
            @Override
@@ -101,7 +146,7 @@ public class fragment_inicio extends Fragment {
                adaptador.setRecuerdos(recuerdos);
            }
        });
-
+        */
 
         //se devuelve la vista
         return v;

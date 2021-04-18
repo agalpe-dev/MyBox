@@ -56,7 +56,7 @@ public class Utils {
         Matrix matrix=new Matrix();
         matrix.preRotate(angulo);
         Bitmap nuevaImagen=Bitmap.createBitmap(bitmap,0,0,bitmap.getWidth(),bitmap.getHeight(),matrix,true);
-        bitmap.recycle();
+        //bitmap.recycle();
         return nuevaImagen;
     }
 

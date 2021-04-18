@@ -35,4 +35,8 @@ public class FragmentInicioViewModel extends AndroidViewModel {
     public LiveData<List<Recuerdo>> getTodosRecuerdos(){
         return liveRecuerdos;
     }
+
+    public void borrarRecuerdo(Recuerdo recuerdo){
+        repository.borrarRecuerdo(recuerdo);
+    }
 }
