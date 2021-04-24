@@ -89,6 +89,15 @@ public class MyBoxRepository {
         });
     }
 
+    public void actualizarRecurdo(Recuerdo recuerdo){
+          databaseWriteExecutor.execute(new Runnable() {
+              @Override
+              public void run() {
+                  mRecuerdoDAO.actualizarRecuerdo(recuerdo);
+              }
+          });
+    }
+
     public void borrarRecuerdo (Recuerdo recuerdo){
         mRecuerdoDAO.borrarRecuerdo(recuerdo);
     }

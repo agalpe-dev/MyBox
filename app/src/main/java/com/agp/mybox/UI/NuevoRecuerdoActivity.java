@@ -55,6 +55,8 @@ public class NuevoRecuerdoActivity extends AppCompatActivity {
     private RecyclerView rv;
     private recursoAdapter adapter=new recursoAdapter();
     private Uri fotoUri;
+    private Recuerdo mRecuerdo;
+    private boolean modoEdicion;
 
 
     @Override
@@ -89,13 +91,14 @@ public class NuevoRecuerdoActivity extends AppCompatActivity {
         // Comprobar si el intent trae un recuerdo (modo edición)
         // Si viene nulo es modo creación nuevo recuerodo
 
-        Recuerdo recuerdo=(Recuerdo)getIntent().getSerializableExtra("recuerdo");
+        mRecuerdo=(Recuerdo)getIntent().getSerializableExtra("recuerdo");
 
-        if (recuerdo !=null){
+        if (mRecuerdo !=null){
             NuevoRecuerdoActivity.this.setTitle(R.string.editarRecuerdoActivity);
-            mTitulo.setText(recuerdo.getTitulo());
-            mComentarios.setText(recuerdo.getComentario());
-            switch (recuerdo.getIdTipoRecuerdo()){
+            modoEdicion=true;
+            mTitulo.setText(mRecuerdo.getTitulo());
+            mComentarios.setText(mRecuerdo.getComentario());
+            switch (mRecuerdo.getIdTipoRecuerdo()){
                 case 1:
                     mRadioGroup.check(rbTicket.getId());
                     break;
@@ -112,6 +115,7 @@ public class NuevoRecuerdoActivity extends AppCompatActivity {
         }
         else{
             NuevoRecuerdoActivity.this.setTitle(R.string.nuevoRecuerdoActivity);
+            modoEdicion=false;
         }
 
         // Registrar observador para mensaje de error en edittext de Titulo que emite el ViewModel
@@ -196,9 +200,18 @@ public class NuevoRecuerdoActivity extends AppCompatActivity {
                 // obtener el texto del radiobutton seleccionado para determinar tipoRecuerdo
                 RadioButton rb= (RadioButton) findViewById(mRadioGroup.getCheckedRadioButtonId());
                 String mTipoRecuerdoNombre = rb.getText().toString().toLowerCase();
-                if (mViewModel.guardar(mTitulo.getText().toString(), mComentarios.getText().toString(),mEtiquetas.getText().toString(), mTipoRecuerdoNombre)){
-                    finish();
+                // Se llama al metodo para crear nuevo Recuerdo o actualizar el existente si
+                // estamos en modo edición
+                if (modoEdicion) {
+                    if (mViewModel.actualizar(mTitulo.getText().toString(), mComentarios.getText().toString(),mEtiquetas.getText().toString(), mTipoRecuerdoNombre, mRecuerdo.getId())){
+                        finish();
+                    }
+                } else if (!(modoEdicion)) {
+                    if (mViewModel.guardar(mTitulo.getText().toString(), mComentarios.getText().toString(),mEtiquetas.getText().toString(), mTipoRecuerdoNombre)){
+                        finish();
+                    }
                 }
+
 
         }
         return super.onOptionsItemSelected(item);

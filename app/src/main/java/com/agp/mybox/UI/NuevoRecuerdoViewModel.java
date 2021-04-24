@@ -68,6 +68,8 @@ public class NuevoRecuerdoViewModel extends AndroidViewModel {
 
         // Comprobar título. Si está vacío se manda mensaje de error a la interfaz (LiveData)
         // y se aborta el registro en base de datos
+
+        /* REFACTORIZADO
         if (titulo.isEmpty()) {
             errorTitulo.setValue("El título no puede estar vacío");
             return false;
@@ -85,6 +87,33 @@ public class NuevoRecuerdoViewModel extends AndroidViewModel {
             } catch (Exception e) {
                 Toast.makeText(getApplication(), "Error! No se pudo guardar el recuerdo", Toast.LENGTH_LONG).show();
             }
+            return true;
+        }*/
+
+        if(checkTitulo(titulo)){
+            int i=mRepository.getTipoRecuerdoID(tiporecuerdo);
+
+            Recuerdo recuerdo = new Recuerdo(titulo, fecha, comentarios, 0, i);
+
+            try {
+                mRepository.crearRecuerdo(recuerdo);
+                Toast.makeText(getApplication(), "Recuerdo guardado!", Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                Toast.makeText(getApplication(), "Error! No se pudo guardar el recuerdo", Toast.LENGTH_LONG).show();
+            }
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    private boolean checkTitulo(String titulo){
+        if (titulo.isEmpty()) {
+            errorTitulo.setValue("El título no puede estar vacío");
+            return false;
+        }
+        else {
+            errorTitulo.setValue("");
             return true;
         }
     }
@@ -127,5 +156,25 @@ public class NuevoRecuerdoViewModel extends AndroidViewModel {
 
     public LiveData<List<RecursoMini>> getRecursosMini(){
         return liveRecursosMini;
+    }
+
+    public boolean actualizar(String titulo, String comentarios, String etiquetas, String tiporecuerdo, int idRecuerdo) {
+        if(checkTitulo(titulo)){
+            long fecha=utils.getTimestamp();
+            int i=mRepository.getTipoRecuerdoID(tiporecuerdo);
+
+            Recuerdo recuerdo = new Recuerdo(titulo, fecha, comentarios, 0, i);
+            recuerdo.setId(idRecuerdo);
+
+            try {
+                mRepository.actualizarRecurdo(recuerdo);
+                Toast.makeText(getApplication(), "Recuerdo actualizado!", Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                Toast.makeText(getApplication(), "Error! No se pudo actualizar el recuerdo", Toast.LENGTH_LONG).show();
+            }
+            return true;
+        }else {
+            return false;
+        }
     }
 }
