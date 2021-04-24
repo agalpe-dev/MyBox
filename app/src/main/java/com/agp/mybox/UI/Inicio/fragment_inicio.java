@@ -7,19 +7,18 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.CheckBox;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -29,19 +28,20 @@ import com.agp.mybox.R;
 import com.agp.mybox.UI.NuevoRecuerdoActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Observable;
 
-public class fragment_inicio extends Fragment {
+public class fragment_inicio extends Fragment implements recuerdoAdapter.ItemClickListener{
 
     FragmentInicioViewModel mViewModel;
     FloatingActionButton mFAB;
     RecyclerView mRV;
-    recuerdoAdapter adaptador=new recuerdoAdapter();
+    recuerdoAdapter adaptador=new recuerdoAdapter(this);
     List<Recuerdo> listaTrabajo = new ArrayList<>();
+    CheckBox cbTicket, cbFactura, cbEntrada, cbOtros;
 
+    // Se incluye aquí para poder hacer uso de ItemTouchHelper y poder gestionar deslizar elemento
     Observer<List<Recuerdo>> listaRecuerdos=new Observer<List<Recuerdo>>() {
         @Override
         public void onChanged(List<Recuerdo> recuerdos) {
@@ -57,6 +57,7 @@ public class fragment_inicio extends Fragment {
         public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
             return false;
         }
+
 
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
@@ -124,11 +125,29 @@ public class fragment_inicio extends Fragment {
         */
         StaggeredGridLayoutManager sglm=new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
         mRV.setLayoutManager(sglm);
-        //adaptador=new recuerdoAdapter();
         mRV.setAdapter(adaptador);
         itemTouchHelper.attachToRecyclerView(mRV);
+        /*
+        PRUABAS --> A ELIMINAR
+        mRV.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+            @Override
+            public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+                View v=rv.findChildViewUnder(e.getX(), e.getY());
+                Toast.makeText(getActivity(),"llega",Toast.LENGTH_LONG).show();
+                return false;
+            }
 
+            @Override
+            public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
 
+            }
+
+            @Override
+            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+            }
+        });
+*/
 
 
 
@@ -148,6 +167,39 @@ public class fragment_inicio extends Fragment {
        });
         */
 
+        // Observar del livedata que comparte el adapter del Recyclerview con el id del
+        // Recuerdo al que se ha pulsado en borón de favorio
+        adaptador.getFavoritoOn().observe(getActivity(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                mViewModel.favoritoON(integer);
+            }
+        });
+
+        adaptador.getFavoritoOff().observe(getActivity(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                mViewModel.favoritoOFF(integer);
+            }
+        });
+
+        // Gestión de los checkboxes
+        cbTicket=(CheckBox)v.findViewById(R.id.checkTicket);
+        cbFactura=(CheckBox)v.findViewById(R.id.checkFactura);
+        cbEntrada=(CheckBox)v.findViewById(R.id.checkEntrada);
+        cbOtros=(CheckBox)v.findViewById(R.id.checkOtros);
+
+        cbTicket.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (cbTicket.isChecked()){
+                    // Buscar en tabla TiposRecuerdo el id
+                    int i=mViewModel.getIdTipoRecuerdo(cbTicket.getText().toString());
+                    mViewModel.getRecuerdosPorTipo(i);
+                }
+            }
+        });
+
         //se devuelve la vista
         return v;
 
@@ -159,4 +211,11 @@ public class fragment_inicio extends Fragment {
 
     }
 
+    @Override
+    public void onItemClick(Recuerdo recuerdo) {
+        // Toast.makeText(getActivity(),"Pulsado: " + recuerdo.getTitulo().toString(),Toast.LENGTH_LONG).show();
+        Intent intent=new Intent(getActivity(),NuevoRecuerdoActivity.class);
+        intent.putExtra("recuerdo", recuerdo);
+        startActivity(intent);
+    }
 }

@@ -30,4 +30,5 @@
     <string name="avisoBorrar">¿Estás seguro que deseas eliminar el recuerdo?</string>
     <string name="borrar">Borrar</string>
     <string name="tituloBorrar">Borrar Recuerdo</string>
+    <string name="editarRecuerdoActivity">Editar Recuerdo</string>
 </resources>

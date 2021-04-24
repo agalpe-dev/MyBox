@@ -28,4 +28,11 @@ public class FragmentFavoritosViewModel extends AndroidViewModel {
         return liveRecuerdos;
     }
 
+    public void favoritoON(int recuerdoId){
+        repository.favoritoON(recuerdoId);
+    }
+
+    public void favoritoOFF(int recuerdoId){
+        repository.favoritoOFF(recuerdoId);
+    }
 }

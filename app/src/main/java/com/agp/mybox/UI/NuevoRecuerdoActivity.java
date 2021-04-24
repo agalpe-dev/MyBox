@@ -31,6 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.agp.mybox.Adaptadores.recursoAdapter;
+import com.agp.mybox.Modelo.POJO.Recuerdo;
 import com.agp.mybox.Modelo.POJO.TipoRecuerdo;
 import com.agp.mybox.Modelo.Parciales.RecursoMini;
 import com.agp.mybox.R;
@@ -50,6 +51,7 @@ public class NuevoRecuerdoActivity extends AppCompatActivity {
     private ActionBar actionBar;
     private TextInputLayout tilTitulo;
     private RadioGroup mRadioGroup;
+    private RadioButton rbTicket, rbFactura, rbEntrada, rbOtros;
     private RecyclerView rv;
     private recursoAdapter adapter=new recursoAdapter();
     private Uri fotoUri;
@@ -59,7 +61,7 @@ public class NuevoRecuerdoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nuevo_recuerdo);
-        NuevoRecuerdoActivity.this.setTitle(R.string.nuevoRecuerdoActivity);
+
         // Mostrar botón vuelta atrás y menu (icono guardar)
         actionBar=getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -72,6 +74,11 @@ public class NuevoRecuerdoActivity extends AppCompatActivity {
         mEtiquetas=(TextView)findViewById(R.id.nuevoRecuerdoEtiquetas);
         tilTitulo=(TextInputLayout)findViewById(R.id.tl_titulo);
         mRadioGroup=(RadioGroup)findViewById(R.id.radio_grupo);
+        rbTicket=(RadioButton)findViewById(R.id.radioTicket);
+        rbFactura=(RadioButton)findViewById(R.id.radioFactura);
+        rbEntrada=(RadioButton)findViewById(R.id.radioEntrada);
+        rbOtros=(RadioButton)findViewById(R.id.radioOtro);
+
         botonFoto=(ImageButton)findViewById(R.id.botonFoto);
         botonArchivo=(ImageButton)findViewById(R.id.botonArchivo);
 
@@ -79,7 +86,35 @@ public class NuevoRecuerdoActivity extends AppCompatActivity {
         rv.setLayoutManager(new GridLayoutManager(this,4));
         rv.setAdapter(adapter);
 
-        // Registrar observador para mensaje de error en edittext de Titulo
+        // Comprobar si el intent trae un recuerdo (modo edición)
+        // Si viene nulo es modo creación nuevo recuerodo
+
+        Recuerdo recuerdo=(Recuerdo)getIntent().getSerializableExtra("recuerdo");
+
+        if (recuerdo !=null){
+            NuevoRecuerdoActivity.this.setTitle(R.string.editarRecuerdoActivity);
+            mTitulo.setText(recuerdo.getTitulo());
+            mComentarios.setText(recuerdo.getComentario());
+            switch (recuerdo.getIdTipoRecuerdo()){
+                case 1:
+                    mRadioGroup.check(rbTicket.getId());
+                    break;
+                case 2:
+                    mRadioGroup.check(rbFactura.getId());
+                    break;
+                case 3:
+                    mRadioGroup.check(rbEntrada.getId());
+                    break;
+                case 4:
+                    mRadioGroup.check(rbOtros.getId());
+                    break;
+            }
+        }
+        else{
+            NuevoRecuerdoActivity.this.setTitle(R.string.nuevoRecuerdoActivity);
+        }
+
+        // Registrar observador para mensaje de error en edittext de Titulo que emite el ViewModel
         Observer<String> avisoError=new Observer<String>() {
             @Override
             public void onChanged(String s) {

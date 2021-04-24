@@ -77,7 +77,7 @@ public class NuevoRecuerdoViewModel extends AndroidViewModel {
             // TODO: implementar esta consulta de forma asíncrona u observable
             int i=mRepository.getTipoRecuerdoID(tiporecuerdo);
 
-            Recuerdo recuerdo = new Recuerdo(titulo, fecha, comentarios, 1, i);
+            Recuerdo recuerdo = new Recuerdo(titulo, fecha, comentarios, 0, i);
 
             try {
                 mRepository.crearRecuerdo(recuerdo);

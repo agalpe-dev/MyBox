@@ -1,5 +1,9 @@
 package com.agp.mybox.Adaptadores;
 
+import android.app.Application;
+import android.content.Context;
+import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,10 +14,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.agp.mybox.Modelo.MyBoxRepository;
 import com.agp.mybox.Modelo.POJO.Recuerdo;
 import com.agp.mybox.R;
+import com.agp.mybox.UI.Inicio.FragmentInicioViewModel;
+import com.agp.mybox.UI.MainActivity;
+import com.agp.mybox.UI.NuevoRecuerdoViewModel;
 import com.agp.mybox.Utils.Utils;
 
 import java.util.ArrayList;
@@ -27,7 +39,13 @@ import java.util.List;
 public class recuerdoAdapter extends RecyclerView.Adapter<recuerdoAdapter.recuerdoViewHolder> {
     private List<Recuerdo> recuerdos=new ArrayList<>();
     Utils utils=new Utils();
+    private MutableLiveData<Integer> favoritoOn= new MutableLiveData<>();
+    private MutableLiveData<Integer> favoritoOff=new MutableLiveData<>();
+    private ItemClickListener clickListener;
 
+    public recuerdoAdapter(ItemClickListener clickListener) {
+        this.clickListener = clickListener;
+    }
 
     /*
     //Recibir List con los datos
@@ -53,6 +71,24 @@ public class recuerdoAdapter extends RecyclerView.Adapter<recuerdoAdapter.recuer
         holder.comentarios.setText(recuerdo.getComentario());
         holder.fecha.setText(utils.timestampToFecha(recuerdo.getFecha()));
         holder.idRegistro.setText(Integer.toString(recuerdo.getId()));
+        int tipoRecuerdo = recuerdo.getIdTipoRecuerdo();
+        // Poner color fondo en tarjeta según tipo de recuerdo
+        // Revisar, usar texto de recuerdo o buscar el código en base de datos. no siempre va a ser 1, 2, 3, 4
+        switch (tipoRecuerdo){
+            case 1:
+                holder.itemView.setBackgroundColor(Color.parseColor("#D8E2EB"));
+                break;
+            case 2:
+                holder.itemView.setBackgroundColor(Color.parseColor("#F0BCAE"));
+                break;
+            case 3:
+                holder.itemView.setBackgroundColor(Color.parseColor("#D6E9CF"));
+                break;
+            case 4:
+                holder.itemView.setBackgroundColor(Color.parseColor("#E5D9E4"));
+                break;
+
+        }
         // Si el valor de favorito en el Recuerdo es 1, es favorito.
         // Se activa el checkbox o no
         if(recuerdo.getFavorito()==1){
@@ -60,14 +96,26 @@ public class recuerdoAdapter extends RecyclerView.Adapter<recuerdoAdapter.recuer
         }else{
             holder.bFavorito.setChecked(false);
         }
-        /* TODO. Implementar el listener para la acción: ViewModel?
-        // Listener para actualizar el valor de favorito
+
+        // Marcar / Desmarcar favorito
         holder.bFavorito.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                if (recuerdo.getFavorito()==1){
+                    favoritoOff.setValue(recuerdo.getId());
+                }else{
+                    favoritoOn.setValue(recuerdo.getId());
+                }
             }
-        });*/
+        });
+
+        // Listener para la pulsación de item
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                clickListener.onItemClick(recuerdo);
+            }
+        });
 
 
     }
@@ -82,8 +130,15 @@ public class recuerdoAdapter extends RecyclerView.Adapter<recuerdoAdapter.recuer
         notifyDataSetChanged();
     }
 
+    public LiveData<Integer> getFavoritoOn(){
+        return favoritoOn;
+    }
 
-    public static class recuerdoViewHolder extends RecyclerView.ViewHolder{
+    public LiveData<Integer> getFavoritoOff(){
+        return favoritoOff;
+    }
+
+    public static class recuerdoViewHolder extends RecyclerView.ViewHolder {
         private TextView titulo, etiquetas, comentarios, fecha, idRegistro;
         private ImageView imagen;
         private ImageButton bBorrar;
@@ -98,11 +153,13 @@ public class recuerdoAdapter extends RecyclerView.Adapter<recuerdoAdapter.recuer
             imagen=(ImageView)itemView.findViewById(R.id.tarjetaImagen);
             bFavorito=(CheckBox) itemView.findViewById(R.id.botonFavorito);
             idRegistro=(TextView) itemView.findViewById(R.id.txtIdRegistro);
-            //bBorrar=(ImageButton) itemView.findViewById(R.id.botonBorrar);
 
-            //setear eventos
-            //bFavorito.setOnClickListener(this::);
+
 
         }
+    }
+
+    public interface ItemClickListener {
+        public void onItemClick(Recuerdo recuerdo);
     }
 }

@@ -36,7 +36,24 @@ public class FragmentInicioViewModel extends AndroidViewModel {
         return liveRecuerdos;
     }
 
+    public LiveData<List<Recuerdo>> getRecuerdosPorTipo(int tipo) {
+        liveRecuerdos=repository.leerRecuerdosPorTipo(tipo);
+        return liveRecuerdos;
+    }
+
+    public int getIdTipoRecuerdo(String s){
+        return repository.getTipoRecuerdoID(s);
+    }
+
     public void borrarRecuerdo(Recuerdo recuerdo){
         repository.borrarRecuerdo(recuerdo);
+    }
+
+    public void favoritoON(int recuerdoId){
+        repository.favoritoON(recuerdoId);
+    }
+
+    public void favoritoOFF(int recuerdoId){
+        repository.favoritoOFF(recuerdoId);
     }
 }

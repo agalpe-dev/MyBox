@@ -7,13 +7,15 @@ import androidx.room.ForeignKey;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import java.io.Serializable;
+
 @Entity(tableName ="recuerdo", foreignKeys = @ForeignKey(
         entity = TipoRecuerdo.class,
         parentColumns = "id",
         childColumns = "idTipoRecuerdo")
 )
 
-public class Recuerdo {
+public class Recuerdo implements Serializable {
     @PrimaryKey(autoGenerate = true)
     @NonNull
     private int id;

@@ -41,4 +41,6 @@ public interface RecuerdoDAO {
     @Query("UPDATE recuerdo SET favorito=0 WHERE id = :idRecuerdo")
     void favoritoOFF(int idRecuerdo);
 
+    @Query("SELECT * FROM recuerdo WHERE idTipoRecuerdo = :idTipoRecuerdo")
+    LiveData<List<Recuerdo>> leerRecuerdosPorTipo(int idTipoRecuerdo);
 }

@@ -105,6 +105,10 @@ public class MyBoxRepository {
           mRecuerdoDAO.favoritoOFF(idRecuerdo);
     }
 
+    public LiveData<List<Recuerdo>> leerRecuerdosPorTipo(int tipo){
+          return mRecuerdoDAO.leerRecuerdosPorTipo(tipo);
+    }
+
 
     public int getId() {
         return id;

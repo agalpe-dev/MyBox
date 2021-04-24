@@ -5,13 +5,53 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".UI.Inicio.fragment_inicio">
-
-    <!-- Para pruebas
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Inicio" />
-     -->
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+
+            >
+            <CheckBox
+                android:id="@+id/checkTicket"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="@string/radioTicket"
+                android:checked="true"/>
+
+            <CheckBox
+                android:id="@+id/checkFactura"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="@string/radioFactura"
+                android:checked="true"/>
+
+            <CheckBox
+                android:id="@+id/checkEntrada"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="@string/radioEntrada"
+                android:checked="true"/>
+
+            <CheckBox
+                android:id="@+id/checkOtros"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="@string/radioOtros"
+                android:checked="true"/>
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvRecuerdos"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/tarjeta_recuerdo" />
+
+    </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/boton_crear"
@@ -25,12 +65,6 @@
         android:layout_marginBottom="10dp"
         app:borderWidth="0dp"
         android:focusable="true" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvRecuerdos"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:listitem="@layout/tarjeta_recuerdo" />
 
 
 </FrameLayout>
