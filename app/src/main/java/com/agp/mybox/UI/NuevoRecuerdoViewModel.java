@@ -204,7 +204,19 @@ public class NuevoRecuerdoViewModel extends AndroidViewModel {
     }
 
     public void borrarRecursos(List<RecursoMini> recursoMini) {
-        
+        Runnable runnable=new Runnable() {
+            @Override
+            public void run() {
+                for (RecursoMini rm : recursoMini){
+                    try {
+                        getApplication().getContentResolver().delete(rm.getUri(),null,null);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
+        executor.submit(runnable);
     }
 
     public String getTipoRecuerdoPorId(int id){
