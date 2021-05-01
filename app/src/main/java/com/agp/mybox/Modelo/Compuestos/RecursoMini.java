@@ -1,4 +1,4 @@
-package com.agp.mybox.Modelo.Parciales;
+package com.agp.mybox.Modelo.Compuestos;
 
 import android.graphics.Bitmap;
 import android.net.Uri;

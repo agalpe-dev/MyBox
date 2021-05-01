@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.agp.mybox.Modelo.MyBoxRepository;
 import com.agp.mybox.Modelo.POJO.Recuerdo;
+import com.agp.mybox.Modelo.POJO.TipoRecuerdo;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,13 +58,23 @@ public class mainActivityViewModel extends AndroidViewModel {
     }
     */
 
+    public void comprobarTablaTipos(){
+        int total=mRepository.totalTiposRecuerdo();
+        if (total==0){
+            mRepository.insertarTipoRecuerdo(new TipoRecuerdo("ticket"));
+            mRepository.insertarTipoRecuerdo(new TipoRecuerdo("factura"));
+            mRepository.insertarTipoRecuerdo(new TipoRecuerdo("entrada"));
+            mRepository.insertarTipoRecuerdo(new TipoRecuerdo("otros"));
+        }
+    }
+
     /**
      * Método para comprobar que existen las rutas donde se almacenarán los archivos asociados
      * a los recuerdos
      */
 
     public void comprobarRutas(){
-        //Creanción de un nuevo hilo para la comprobación y creación de rutas
+        // Crear nuevo hilo para la comprobación y creación de rutas
         Runnable runnable=new Runnable() {
             @Override
             public void run() {
@@ -80,6 +91,7 @@ public class mainActivityViewModel extends AndroidViewModel {
                 rutas.add(rutaImagen);
                 rutas.add(rutaOtros);
 
+                // Si las rutas ya existen, finaliza la ejecución
                 if (rutaFotos.exists() && rutaPdf.exists() && rutaImagen.exists() && rutaOtros.exists()) {
                     return;
                 }
@@ -101,7 +113,8 @@ public class mainActivityViewModel extends AndroidViewModel {
             }
         };
         executor.submit(runnable);
-        executor.shutdown();
+        // No se cierra el executor para evitar errores al recargar la Activity (rotar pantalla)
+        //executor.shutdown();
 
         }
 }

@@ -46,6 +46,7 @@ public class FragmentInicioViewModel extends AndroidViewModel {
     }
 
     public void borrarRecuerdo(Recuerdo recuerdo){
+        // TODO: borrar recursos asociados en tablas y disco
         repository.borrarRecuerdo(recuerdo);
     }
 

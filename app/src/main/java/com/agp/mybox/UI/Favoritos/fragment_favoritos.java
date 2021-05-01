@@ -25,7 +25,7 @@ public class fragment_favoritos extends Fragment implements recuerdoAdapter.Item
 
     private FragmentFavoritosViewModel mViewModel;
     private RecyclerView mRv;
-    private recuerdoAdapter adapter=new recuerdoAdapter(this);
+    private recuerdoAdapter adapter=new recuerdoAdapter(this,getActivity());
 
     public static fragment_favoritos newInstance() {
         return new fragment_favoritos();
@@ -47,6 +47,7 @@ public class fragment_favoritos extends Fragment implements recuerdoAdapter.Item
         mRv.setLayoutManager(llm);
         mRv.setHasFixedSize(true);
         mRv.setAdapter(adapter);
+
 
 
         //observar el livedata que proporciona el viewmodel

@@ -1,6 +1,7 @@
 package com.agp.mybox.UI;
 
 import android.app.Application;
+import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
@@ -9,19 +10,16 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.FileProvider;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 
-import com.agp.mybox.Modelo.AppDataBase;
 import com.agp.mybox.Modelo.MyBoxRepository;
 import com.agp.mybox.Modelo.POJO.Recuerdo;
-import com.agp.mybox.Modelo.Parciales.RecursoMini;
+import com.agp.mybox.Modelo.Compuestos.RecursoMini;
+import com.agp.mybox.Modelo.POJO.Recurso;
+import com.agp.mybox.R;
 import com.agp.mybox.Utils.Utils;
-
-import org.w3c.dom.ls.LSInput;
 
 import java.io.File;
 import java.io.IOException;
@@ -91,15 +89,37 @@ public class NuevoRecuerdoViewModel extends AndroidViewModel {
         }*/
 
         if(checkTitulo(titulo)){
-            int i=mRepository.getTipoRecuerdoID(tiporecuerdo);
+            int idTipoRecuerdo=mRepository.getTipoRecuerdoID(tiporecuerdo);
 
-            Recuerdo recuerdo = new Recuerdo(titulo, fecha, comentarios, 0, i);
+            Recuerdo recuerdo = new Recuerdo(titulo, fecha, comentarios, 0, idTipoRecuerdo);
+
 
             try {
                 mRepository.crearRecuerdo(recuerdo);
-                Toast.makeText(getApplication(), "Recuerdo guardado!", Toast.LENGTH_SHORT).show();
+
+                // Crear ArrayList de los recursos. Se obtiene los minirecursos de la lista y se crean
+                // los recursos equivalentes una vez conocido el id del Recuerdo nuevo
+                if (recursosMinis.size()>0){
+                    int idTipo=0;
+                    do{
+                        idTipo = mRepository.getIdRecuerdoPorFecha(fecha);
+                    } while (idTipo==0);
+
+
+                    ArrayList<Recurso> recursos=new ArrayList<>();
+                    for (RecursoMini rm: recursosMinis){
+                        AssetFileDescriptor fileDescriptor=getApplication().getApplicationContext().getContentResolver().openAssetFileDescriptor(rm.getUri(),"r");
+                        long tamano=fileDescriptor.getLength();
+                        Recurso recurso=new Recurso(fecha,tamano,rm.getUri().toString(),idTipo);
+                        recursos.add(recurso);
+                        mRepository.crearRecurso(recurso);
+
+                    }
+                }
+
+                Toast.makeText(getApplication(), R.string.recuerdoGuardado, Toast.LENGTH_SHORT).show();
             } catch (Exception e) {
-                Toast.makeText(getApplication(), "Error! No se pudo guardar el recuerdo", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplication(), R.string.errorGuardarRecuerdo, Toast.LENGTH_LONG).show();
             }
             return true;
         }else {
@@ -109,7 +129,7 @@ public class NuevoRecuerdoViewModel extends AndroidViewModel {
 
     private boolean checkTitulo(String titulo){
         if (titulo.isEmpty()) {
-            errorTitulo.setValue("El título no puede estar vacío");
+            errorTitulo.setValue(String.valueOf(R.string.avisoTituloVacio));
             return false;
         }
         else {
@@ -142,7 +162,7 @@ public class NuevoRecuerdoViewModel extends AndroidViewModel {
     }
 
 
-    public void crearRecursoLista(Uri u){
+    public void crearMiniRecursoLista(Uri u){
         Bitmap bitmap= null;
         try {
             bitmap = MediaStore.Images.Media.getBitmap(getApplication().getContentResolver(),u);
@@ -154,11 +174,16 @@ public class NuevoRecuerdoViewModel extends AndroidViewModel {
         liveRecursosMini.setValue(recursosMinis);
     }
 
+    public LiveData<List<Recurso>> RecursosDeRecuerdo(int idRecuerdo){
+        return mRepository.RecursosDeRecuerdo(idRecuerdo);
+    }
+
+
     public LiveData<List<RecursoMini>> getRecursosMini(){
         return liveRecursosMini;
     }
 
-    public boolean actualizar(String titulo, String comentarios, String etiquetas, String tiporecuerdo, int idRecuerdo) {
+    public boolean actualizarRecuerdo(String titulo, String comentarios, String etiquetas, String tiporecuerdo, int idRecuerdo) {
         if(checkTitulo(titulo)){
             long fecha=utils.getTimestamp();
             int i=mRepository.getTipoRecuerdoID(tiporecuerdo);
@@ -167,14 +192,22 @@ public class NuevoRecuerdoViewModel extends AndroidViewModel {
             recuerdo.setId(idRecuerdo);
 
             try {
-                mRepository.actualizarRecurdo(recuerdo);
-                Toast.makeText(getApplication(), "Recuerdo actualizado!", Toast.LENGTH_SHORT).show();
+                mRepository.actualizarRecuerdo(recuerdo);
+                Toast.makeText(getApplication(), R.string.recuerdoActualizado, Toast.LENGTH_SHORT).show();
             } catch (Exception e) {
-                Toast.makeText(getApplication(), "Error! No se pudo actualizar el recuerdo", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplication(), R.string.errorActualizarRecuerdo, Toast.LENGTH_LONG).show();
             }
             return true;
         }else {
             return false;
         }
+    }
+
+    public void borrarRecursos(List<RecursoMini> recursoMini) {
+        
+    }
+
+    public String getTipoRecuerdoPorId(int id){
+        return mRepository.getTipoRecuerdoPorId(id);
     }
 }

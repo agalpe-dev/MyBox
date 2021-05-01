@@ -18,7 +18,7 @@
     <string name="descripcionBotonFoto">Foto</string>
     <string name="descripcionBotonArchivo">Archivo</string>
     <string name="radioTicket">Ticket</string>
-    <string name="radioOtros">Otro</string>
+    <string name="radioOtros">Otros</string>
     <string name="radioEntrada">Entrada</string>
     <string name="radioFactura">Factura</string>
     <string name="nuevoRecuerdoActivity">Nuevo Recuerdo</string>
@@ -31,4 +31,11 @@
     <string name="borrar">Borrar</string>
     <string name="tituloBorrar">Borrar Recuerdo</string>
     <string name="editarRecuerdoActivity">Editar Recuerdo</string>
+    <string name="avisoTituloVacio">El título no puede estar vacío</string>
+    <string name="recuerdoGuardado">Recuerdo guardado!</string>
+    <string name="errorGuardarRecuerdo">Error! No se pudo guardar el recuerdo</string>
+    <string name="recuerdoActualizado">Recuerdo actualizado!</string>
+    <string name="errorActualizarRecuerdo">Error! No se pudo actualizar el recuerdo</string>
+    <string name="title_activity_ver_imagen">FullscreenActivity</string>
+    <string name="cerrar">Cerrar</string>
 </resources>

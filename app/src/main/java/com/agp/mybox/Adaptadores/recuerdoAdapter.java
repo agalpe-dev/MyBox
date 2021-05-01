@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -42,9 +44,11 @@ public class recuerdoAdapter extends RecyclerView.Adapter<recuerdoAdapter.recuer
     private MutableLiveData<Integer> favoritoOn= new MutableLiveData<>();
     private MutableLiveData<Integer> favoritoOff=new MutableLiveData<>();
     private ItemClickListener clickListener;
+    Context context;
 
-    public recuerdoAdapter(ItemClickListener clickListener) {
+    public recuerdoAdapter(ItemClickListener clickListener, Context context) {
         this.clickListener = clickListener;
+        this.context=context;
     }
 
     /*
@@ -103,6 +107,13 @@ public class recuerdoAdapter extends RecyclerView.Adapter<recuerdoAdapter.recuer
             public void onClick(View view) {
                 if (recuerdo.getFavorito()==1){
                     favoritoOff.setValue(recuerdo.getId());
+                    notifyItemRemoved(position);
+                    try {
+                        Thread.sleep(250);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
                 }else{
                     favoritoOn.setValue(recuerdo.getId());
                 }

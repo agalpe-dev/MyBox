@@ -3,6 +3,7 @@ package com.agp.mybox.Modelo;
 import android.app.Application;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.agp.mybox.Modelo.DAO.*;
 import com.agp.mybox.Modelo.POJO.*;
@@ -27,6 +28,7 @@ public class MyBoxRepository {
     private LiveData<List<Recurso>> recursos;
     private LiveData<List<Etiqueta>> etiquetas;
     private LiveData<List<OCR>> Ocrs;
+    private MutableLiveData<Long> rowId=new MutableLiveData<>();
     //private LiveData<List<Recuerdo>> mRecuerdo; ¿?
     //private LiveData<List<Recurso>> recursosDeRecuerdo; ¿?
 
@@ -38,7 +40,8 @@ public class MyBoxRepository {
     private OcrDAO mOcrDAO;
     private TipoRecuerdoDAO mTipoRecuerdoDAO;
 
-    //Variable local para pasar tipo long a mÃ©todos que lo necesitan para acceder a los id de los registros
+    //Variable local para pasar tipo int a metodos que lo necesitan para acceder a los id de los registros
+    // Valorar uso para eliminar
     private int id;
 
 
@@ -84,12 +87,12 @@ public class MyBoxRepository {
         databaseWriteExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                mRecuerdoDAO.insertarRecuerdo(recuerdo);
+               mRecuerdoDAO.insertarRecuerdo(recuerdo);
             }
         });
     }
 
-    public void actualizarRecurdo(Recuerdo recuerdo){
+    public void actualizarRecuerdo(Recuerdo recuerdo){
           databaseWriteExecutor.execute(new Runnable() {
               @Override
               public void run() {
@@ -98,12 +101,41 @@ public class MyBoxRepository {
           });
     }
 
+    public void crearRecurso(Recurso recurso){
+          databaseWriteExecutor.execute(new Runnable() {
+              @Override
+              public void run() {
+                  mRecursoDAO.insertarRecurso(recurso);
+              }
+          });
+    }
+
+    public int getLastIdRecuerdo(){
+          return mRecuerdoDAO.getLastId();
+    }
+
     public void borrarRecuerdo (Recuerdo recuerdo){
         mRecuerdoDAO.borrarRecuerdo(recuerdo);
     }
 
     public int getTipoRecuerdoID(String tiporecuerdo){
           return mTipoRecuerdoDAO.getTipoRecuerdoID(tiporecuerdo);
+    }
+
+    public String getTipoRecuerdoPorId(int id){
+          return mTipoRecuerdoDAO.getTipoRecuerdoPorId(id);
+    }
+
+    public void insertarTipoRecuerdo(TipoRecuerdo tipoRecuerdo){
+          mTipoRecuerdoDAO.insertarTipoRecuerdo(tipoRecuerdo);
+    }
+
+    public int totalTiposRecuerdo(){
+          return mTipoRecuerdoDAO.contar();
+    }
+
+    public int getIdRecuerdoPorFecha(long fecha){
+          return mRecuerdoDAO.recuerdoPorFecha(fecha);
     }
 
     public void favoritoON(int idRecuerdo){
@@ -116,6 +148,10 @@ public class MyBoxRepository {
 
     public LiveData<List<Recuerdo>> leerRecuerdosPorTipo(int tipo){
           return mRecuerdoDAO.leerRecuerdosPorTipo(tipo);
+    }
+
+    public LiveData<List<Recurso>> RecursosDeRecuerdo(int idRecuerdo){
+          return mRecursoDAO.RecursosDeRecuerdo(idRecuerdo);
     }
 
 

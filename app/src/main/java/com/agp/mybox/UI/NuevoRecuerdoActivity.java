@@ -3,7 +3,6 @@ package com.agp.mybox.UI;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 import androidx.lifecycle.Observer;
@@ -13,8 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -23,22 +20,21 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.agp.mybox.Adaptadores.miniRecursoAdapter;
 import com.agp.mybox.Adaptadores.recursoAdapter;
 import com.agp.mybox.Modelo.POJO.Recuerdo;
-import com.agp.mybox.Modelo.POJO.TipoRecuerdo;
-import com.agp.mybox.Modelo.Parciales.RecursoMini;
+import com.agp.mybox.Modelo.Compuestos.RecursoMini;
+import com.agp.mybox.Modelo.POJO.Recurso;
 import com.agp.mybox.R;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
@@ -53,7 +49,9 @@ public class NuevoRecuerdoActivity extends AppCompatActivity {
     private RadioGroup mRadioGroup;
     private RadioButton rbTicket, rbFactura, rbEntrada, rbOtros;
     private RecyclerView rv;
-    private recursoAdapter adapter=new recursoAdapter();
+    private miniRecursoAdapter miniAdapter =new miniRecursoAdapter(this);
+    private recursoAdapter recursoAdapter=new recursoAdapter(this);
+
     private Uri fotoUri;
     private Recuerdo mRecuerdo;
     private boolean modoEdicion;
@@ -86,18 +84,46 @@ public class NuevoRecuerdoActivity extends AppCompatActivity {
 
         rv=(RecyclerView) findViewById(R.id.rvRecursosmini);
         rv.setLayoutManager(new GridLayoutManager(this,4));
-        rv.setAdapter(adapter);
+        // rv.setAdapter(miniAdapter);
 
         // Comprobar si el intent trae un recuerdo (modo edición)
         // Si viene nulo es modo creación nuevo recuerodo
 
         mRecuerdo=(Recuerdo)getIntent().getSerializableExtra("recuerdo");
 
+        // Edición de Recuerdo. Se cargan los datos del Recuerdo en el formulario
         if (mRecuerdo !=null){
             NuevoRecuerdoActivity.this.setTitle(R.string.editarRecuerdoActivity);
             modoEdicion=true;
             mTitulo.setText(mRecuerdo.getTitulo());
             mComentarios.setText(mRecuerdo.getComentario());
+            String txtTipoRecuerdo=mViewModel.getTipoRecuerdoPorId(mRecuerdo.getIdTipoRecuerdo());
+            rv.setAdapter(recursoAdapter);
+
+            switch (txtTipoRecuerdo){
+                case "ticket":
+                    mRadioGroup.check(rbTicket.getId());
+                    break;
+                case "factura":
+                    mRadioGroup.check(rbFactura.getId());
+                    break;
+                case "entrada":
+                    mRadioGroup.check(rbEntrada.getId());
+                    break;
+                case "otros":
+                    mRadioGroup.check(rbOtros.getId());
+                    break;
+            }
+
+            mViewModel.RecursosDeRecuerdo(mRecuerdo.getId()).observe(this, new Observer<List<Recurso>>() {
+                @Override
+                public void onChanged(List<Recurso> recursos) {
+                    recursoAdapter.setRecursoList(recursos);
+                    Log.d("ANTONIO_LIVE", "Llego a actualizar recursos del recuerdo cargado para edición");
+                }
+            });
+
+            /* TODO - se busca por id fijo, se sustituye (arriba) por busqueda en base datos nombre TipoRecuerdo
             switch (mRecuerdo.getIdTipoRecuerdo()){
                 case 1:
                     mRadioGroup.check(rbTicket.getId());
@@ -111,11 +137,12 @@ public class NuevoRecuerdoActivity extends AppCompatActivity {
                 case 4:
                     mRadioGroup.check(rbOtros.getId());
                     break;
-            }
+            }*/
         }
         else{
             NuevoRecuerdoActivity.this.setTitle(R.string.nuevoRecuerdoActivity);
             modoEdicion=false;
+            rv.setAdapter(miniAdapter);
         }
 
         // Registrar observador para mensaje de error en edittext de Titulo que emite el ViewModel
@@ -150,7 +177,7 @@ public class NuevoRecuerdoActivity extends AppCompatActivity {
                     if (foto!=null){
                         //Uri fotoUri= FileProvider.getUriForFile(getApplicationContext(),"com.agp.mybox.fileprovider",foto);
                         fotoUri= FileProvider.getUriForFile(getApplicationContext(),"com.agp.mybox.fileprovider",foto);
-                        Log.d("ANTONIO",fotoUri.toString());
+                        //Log.d("ANTONIO",fotoUri.toString());
                         hacerFotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, fotoUri);
                         //startActivityForResult(hacerFotoIntent, PEDIR_CAPTURA_FOTO);
                         //startActivity(hacerFotoIntent);
@@ -161,15 +188,14 @@ public class NuevoRecuerdoActivity extends AppCompatActivity {
             }
         });
 
-        // Observar el LiveData del ViewModel para el recycleview de los recursos
+        // Observar el LiveData del ViewModel para el recycleview de los minirecursos
         mViewModel.getRecursosMini().observe(this, new Observer<List<RecursoMini>>() {
             @Override
             public void onChanged(List<RecursoMini> recursoMinis) {
-                adapter.setRecursos(recursoMinis);
-                Log.d("RECURSOS", Integer.toString(recursoMinis.size()));
+                miniAdapter.setRecursos(recursoMinis);
+                //Log.d("RECURSOS", Integer.toString(recursoMinis.size()));
             }
         });
-
 
     }
 
@@ -177,7 +203,7 @@ public class NuevoRecuerdoActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode==PEDIR_CAPTURA_FOTO && resultCode == RESULT_OK){
-                mViewModel.crearRecursoLista(fotoUri);
+                mViewModel.crearMiniRecursoLista(fotoUri);
         }
     }
 
@@ -194,6 +220,7 @@ public class NuevoRecuerdoActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case android.R.id.home:
+                mViewModel.borrarRecursos(miniAdapter.getRecursos());
                 finish();
                 break;
             case R.id.botonGuardar:
@@ -203,7 +230,7 @@ public class NuevoRecuerdoActivity extends AppCompatActivity {
                 // Se llama al metodo para crear nuevo Recuerdo o actualizar el existente si
                 // estamos en modo edición
                 if (modoEdicion) {
-                    if (mViewModel.actualizar(mTitulo.getText().toString(), mComentarios.getText().toString(),mEtiquetas.getText().toString(), mTipoRecuerdoNombre, mRecuerdo.getId())){
+                    if (mViewModel.actualizarRecuerdo(mTitulo.getText().toString(), mComentarios.getText().toString(),mEtiquetas.getText().toString(), mTipoRecuerdoNombre, mRecuerdo.getId())){
                         finish();
                     }
                 } else if (!(modoEdicion)) {

@@ -25,6 +25,9 @@ public interface TipoRecuerdoDAO {
     @Query("SELECT id FROM tiporecuerdo WHERE LOWER(tipoRecuerdo) = LOWER(:tiporecuerdo)")
     int getTipoRecuerdoID(String tiporecuerdo);
 
+    @Query("SELECT tipoRecuerdo FROM tiporecuerdo WHERE id = :id")
+    String getTipoRecuerdoPorId(int id);
+
     @Query("SELECT COUNT(id) FROM tiporecuerdo")
     int contar();
 

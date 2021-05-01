@@ -43,4 +43,11 @@ public interface RecuerdoDAO {
 
     @Query("SELECT * FROM recuerdo WHERE idTipoRecuerdo = :idTipoRecuerdo")
     LiveData<List<Recuerdo>> leerRecuerdosPorTipo(int idTipoRecuerdo);
+
+    @Query("SELECT MAX (id) FROM recuerdo")
+    int getLastId();
+
+    @Query("SELECT id FROM recuerdo WHERE fecha = :fecha")
+    int recuerdoPorFecha(long fecha);
+
 }

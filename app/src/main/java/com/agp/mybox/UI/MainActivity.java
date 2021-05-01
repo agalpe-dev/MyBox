@@ -55,6 +55,10 @@ public class MainActivity extends AppCompatActivity {
         //Comprobar que existen las rutas
         mViewModel.comprobarRutas();
 
+        //Comprobar que la tabla tiporecuerdo tiene los valores por defecto
+        mViewModel.comprobarTablaTipos();
+
+
 
     }
 

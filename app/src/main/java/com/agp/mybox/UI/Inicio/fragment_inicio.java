@@ -37,7 +37,7 @@ public class fragment_inicio extends Fragment implements recuerdoAdapter.ItemCli
     FragmentInicioViewModel mViewModel;
     FloatingActionButton mFAB;
     RecyclerView mRV;
-    recuerdoAdapter adaptador=new recuerdoAdapter(this);
+    recuerdoAdapter adaptador=new recuerdoAdapter(this, getActivity());
     List<Recuerdo> listaTrabajo = new ArrayList<>();
     CheckBox cbTicket, cbFactura, cbEntrada, cbOtros;
 

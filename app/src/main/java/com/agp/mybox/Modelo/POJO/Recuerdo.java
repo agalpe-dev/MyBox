@@ -9,10 +9,13 @@ import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
 
+import static androidx.room.ForeignKey.CASCADE;
+
 @Entity(tableName ="recuerdo", foreignKeys = @ForeignKey(
         entity = TipoRecuerdo.class,
         parentColumns = "id",
-        childColumns = "idTipoRecuerdo")
+        childColumns = "idTipoRecuerdo",
+        onDelete = CASCADE)
 )
 
 public class Recuerdo implements Serializable {
@@ -87,8 +90,4 @@ public class Recuerdo implements Serializable {
         this.idTipoRecuerdo = idTipoRecuerdo;
     }
 
-    public long getTimestamp(){
-        long t=System.currentTimeMillis()/1000;
-        return t;
-    }
 }
