@@ -4,11 +4,14 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    app:cardCornerRadius="18dp"
+    app:cardCornerRadius="12dp"
     app:cardElevation="4dp"
     android:layout_marginVertical="4dp"
     android:layout_marginHorizontal="4dp"
-    app:cardBackgroundColor="#F3F6F9">
+    android:foreground="?android:attr/selectableItemBackground"
+    app:cardBackgroundColor="#F3F6F9"
+    android:id="@+id/tarjeta">
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

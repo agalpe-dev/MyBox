@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -40,6 +41,7 @@ import java.util.List;
 
 public class NuevoRecuerdoActivity extends AppCompatActivity {
     static final int PEDIR_CAPTURA_FOTO = 1;
+    static final int PEDIR_ARCHIVO = 2;
 
     private NuevoRecuerdoViewModel mViewModel;
     private ImageButton botonFoto, botonArchivo;
@@ -84,21 +86,20 @@ public class NuevoRecuerdoActivity extends AppCompatActivity {
 
         rv=(RecyclerView) findViewById(R.id.rvRecursosmini);
         rv.setLayoutManager(new GridLayoutManager(this,4));
-        // rv.setAdapter(miniAdapter);
+
 
         // Comprobar si el intent trae un recuerdo (modo edición)
         // Si viene nulo es modo creación nuevo recuerodo
-
         mRecuerdo=(Recuerdo)getIntent().getSerializableExtra("recuerdo");
 
         // Edición de Recuerdo. Se cargan los datos del Recuerdo en el formulario
         if (mRecuerdo !=null){
-            NuevoRecuerdoActivity.this.setTitle(R.string.editarRecuerdoActivity);
             modoEdicion=true;
+            NuevoRecuerdoActivity.this.setTitle(R.string.editarRecuerdoActivity);
             mTitulo.setText(mRecuerdo.getTitulo());
             mComentarios.setText(mRecuerdo.getComentario());
             String txtTipoRecuerdo=mViewModel.getTipoRecuerdoPorId(mRecuerdo.getIdTipoRecuerdo());
-            rv.setAdapter(recursoAdapter);
+            rv.setAdapter(recursoAdapter); // Adaptador de Recuerdos (cargados de base datos)
 
             switch (txtTipoRecuerdo){
                 case "ticket":
@@ -115,37 +116,25 @@ public class NuevoRecuerdoActivity extends AppCompatActivity {
                     break;
             }
 
+            // Observer para LiveData con los Recuersos del Recuerdo cargado
             mViewModel.RecursosDeRecuerdo(mRecuerdo.getId()).observe(this, new Observer<List<Recurso>>() {
                 @Override
                 public void onChanged(List<Recurso> recursos) {
                     recursoAdapter.setRecursoList(recursos);
-                    Log.d("ANTONIO_LIVE", "Llego a actualizar recursos del recuerdo cargado para edición");
                 }
             });
 
-            /* TODO - se busca por id fijo, se sustituye (arriba) por busqueda en base datos nombre TipoRecuerdo
-            switch (mRecuerdo.getIdTipoRecuerdo()){
-                case 1:
-                    mRadioGroup.check(rbTicket.getId());
-                    break;
-                case 2:
-                    mRadioGroup.check(rbFactura.getId());
-                    break;
-                case 3:
-                    mRadioGroup.check(rbEntrada.getId());
-                    break;
-                case 4:
-                    mRadioGroup.check(rbOtros.getId());
-                    break;
-            }*/
+
+            // Estamos en modo creación de recuerdo
         }
         else{
             NuevoRecuerdoActivity.this.setTitle(R.string.nuevoRecuerdoActivity);
             modoEdicion=false;
-            rv.setAdapter(miniAdapter);
+            rv.setAdapter(miniAdapter); // Adaptador miniRecuerdo (sólo bitmap thumbnail y uri del archivo de imagen)
         }
 
-        // Registrar observador para mensaje de error en edittext de Titulo que emite el ViewModel
+
+        // Registrar observador para mensaje de error en editText de Titulo que emite el ViewModel
         Observer<String> avisoError=new Observer<String>() {
             @Override
             public void onChanged(String s) {
@@ -157,10 +146,12 @@ public class NuevoRecuerdoActivity extends AppCompatActivity {
                 }
             }
         };
+
+        // Observador LiveData del mensaje error que emite ViewModel al comprobar si el título está vacío
         mViewModel.getErrorTitulo().observe(this,avisoError);
 
 
-        // Listener botonFoton
+        // Listener botonFoto -> Llama al intent de la cámara y crea el archivo de imagen.
         botonFoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -169,22 +160,30 @@ public class NuevoRecuerdoActivity extends AppCompatActivity {
                 if (hacerFotoIntent.resolveActivity(getPackageManager())!=null){
                     File foto=null;
                     try{
-                        foto = mViewModel.crearArchivoImagen();
+                        foto = mViewModel.crearArchivoImagen(); // el viewmodel crea el archivo en disco
                     }catch (IOException e){
                         e.printStackTrace();
                         Toast.makeText(NuevoRecuerdoActivity.this,"No se ha podido guardar la imagen",Toast.LENGTH_LONG).show();
                     }
                     if (foto!=null){
-                        //Uri fotoUri= FileProvider.getUriForFile(getApplicationContext(),"com.agp.mybox.fileprovider",foto);
                         fotoUri= FileProvider.getUriForFile(getApplicationContext(),"com.agp.mybox.fileprovider",foto);
-                        //Log.d("ANTONIO",fotoUri.toString());
                         hacerFotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, fotoUri);
-                        //startActivityForResult(hacerFotoIntent, PEDIR_CAPTURA_FOTO);
-                        //startActivity(hacerFotoIntent);
                         startActivityForResult(hacerFotoIntent,PEDIR_CAPTURA_FOTO);
                     }
 
                 }
+            }
+        });
+
+        // Listener del botón para selección de archivo (no foto)
+        botonArchivo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(Intent.ACTION_GET_CONTENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                //intent.setType("text/plain|image/*|*/pdf");
+                intent.setType("*/*");
+                startActivityForResult(Intent.createChooser(intent,null),PEDIR_ARCHIVO);
             }
         });
 
@@ -202,8 +201,14 @@ public class NuevoRecuerdoActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        // Filtra la accion (hacer foto) y si es OK llama al viewmodel con el uri del archivo creado
+        // para que este actualice el adaptador y cree el thumbnail de la foto tomada
+        // Se manda info del modo edición para en el ViewModel crear Recurso o miniRecurso
         if (requestCode==PEDIR_CAPTURA_FOTO && resultCode == RESULT_OK){
-                mViewModel.crearMiniRecursoLista(fotoUri);
+            mViewModel.crearMiniRecursoLista(fotoUri, "foto",mRecuerdo);
+        }else if (requestCode==PEDIR_ARCHIVO && resultCode == RESULT_OK) {
+            Uri uri_archivo=data.getData();
+            mViewModel.crearMiniRecursoLista(uri_archivo,"archivo",mRecuerdo);
         }
     }
 
@@ -220,6 +225,7 @@ public class NuevoRecuerdoActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case android.R.id.home:
+                // Si no se guarda el Recuerdo, se llama a función que borra del disco la fotos creadas
                 mViewModel.borrarRecursos(miniAdapter.getRecursos());
                 finish();
                 break;

@@ -168,7 +168,7 @@ public class fragment_inicio extends Fragment implements recuerdoAdapter.ItemCli
         */
 
         // Observar del livedata que comparte el adapter del Recyclerview con el id del
-        // Recuerdo al que se ha pulsado en borón de favorio
+        // Recuerdo al que se ha pulsado en borón de favorito
         adaptador.getFavoritoOn().observe(getActivity(), new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {

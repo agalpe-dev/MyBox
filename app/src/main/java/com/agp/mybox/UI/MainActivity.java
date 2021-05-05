@@ -1,17 +1,13 @@
 package com.agp.mybox.UI;
 
 import android.os.Bundle;
-import android.util.Log;
-import android.view.MenuInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 
 import com.agp.mybox.R;
 
@@ -30,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
         barra_menu=(SmoothBottomBar) findViewById(R.id.barra_menu);
 
         mViewModel=new ViewModelProvider(this,new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(mainActivityViewModel.class);
+
+        mViewModel.checkPreferencias();
 
         //mViewModel.poblar();
         /*

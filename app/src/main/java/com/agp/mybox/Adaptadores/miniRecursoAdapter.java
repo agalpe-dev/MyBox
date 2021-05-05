@@ -54,12 +54,10 @@ public class miniRecursoAdapter extends RecyclerView.Adapter<miniRecursoAdapter.
         holder.miniatura.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*Intent intent=new Intent(context, ImagenActivity.class);
-                intent.putExtra("uriImagen",recurso.getUri().toString());
-                context.startActivity(intent);*/
-
+                // Abrir el miniRecuerso con el visor del sistema (imagen, pdf, txt)
+                String tipoMime=context.getContentResolver().getType(recurso.getUri());
                 Intent intent=new Intent(Intent.ACTION_VIEW);
-                intent.setDataAndType(recurso.getUri(),"image/jpeg");
+                intent.setDataAndType(recurso.getUri(),tipoMime);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                 intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 context.startActivity(intent);

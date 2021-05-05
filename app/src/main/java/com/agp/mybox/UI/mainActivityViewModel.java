@@ -1,6 +1,8 @@
 package com.agp.mybox.UI;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.provider.AlarmClock;
 import android.provider.ContactsContract;
 import android.util.Log;
@@ -29,12 +31,14 @@ public class mainActivityViewModel extends AndroidViewModel {
     private final String APP_RUTA=getApplication().getApplicationInfo().dataDir;
     //private final String APP_RUTA=getApplication().getFilesDir().toString();
     private final String ALMACEN=APP_RUTA+"/box";
-    private final String FOTOS=ALMACEN+"/camera";
+    private final String FOTOS=ALMACEN+"/camara";
     private final String PDF=ALMACEN+"/pdf";
-    private final String IMAGENES=ALMACEN+"/images";
+    private final String IMAGENES=ALMACEN+"/imagen";
     private final String OTROS= ALMACEN+"/otros";
     //private final String[] RUTAS={ALMACEN,FOTOS,PDF,IMAGENES,FOTOS};
 
+    private final String PREFERENCIAS="Preferencias";
+    private SharedPreferences mPrefs = getApplication().getSharedPreferences(PREFERENCIAS, Context.MODE_PRIVATE);
 
     //Executor para realizar algunas funciones en otro hilo
     ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -117,4 +121,12 @@ public class mainActivityViewModel extends AndroidViewModel {
         //executor.shutdown();
 
         }
+
+    public void checkPreferencias() {
+        if (!mPrefs.contains("OCR")){
+            SharedPreferences.Editor editor=mPrefs.edit();
+            editor.putBoolean("OCR", true);
+            editor.commit();
+        }
+    }
 }

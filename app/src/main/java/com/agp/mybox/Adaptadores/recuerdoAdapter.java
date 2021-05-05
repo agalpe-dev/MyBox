@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -77,19 +78,23 @@ public class recuerdoAdapter extends RecyclerView.Adapter<recuerdoAdapter.recuer
         holder.idRegistro.setText(Integer.toString(recuerdo.getId()));
         int tipoRecuerdo = recuerdo.getIdTipoRecuerdo();
         // Poner color fondo en tarjeta según tipo de recuerdo
-        // Revisar, usar texto de recuerdo o buscar el código en base de datos. no siempre va a ser 1, 2, 3, 4
+        // TODO -> Revisar, usar texto de recuerdo y buscar el código en base de datos. no siempre va a ser 1, 2, 3, 4
         switch (tipoRecuerdo){
             case 1:
-                holder.itemView.setBackgroundColor(Color.parseColor("#D8E2EB"));
+                //holder.itemView.setBackgroundColor(Color.parseColor("#D8E2EB"));
+                holder.tarjeta.setCardBackgroundColor(Color.parseColor("#D8E2EB"));
                 break;
             case 2:
-                holder.itemView.setBackgroundColor(Color.parseColor("#F0BCAE"));
+                // holder.itemView.setBackgroundColor(Color.parseColor("#F0BCAE")); -> efecto secundario tarjeta pierde round corner
+                holder.tarjeta.setCardBackgroundColor(Color.parseColor("#F0BCAE"));
                 break;
             case 3:
-                holder.itemView.setBackgroundColor(Color.parseColor("#D6E9CF"));
+                //holder.itemView.setBackgroundColor(Color.parseColor("#D6E9CF"));
+                holder.tarjeta.setCardBackgroundColor(Color.parseColor("#D6E9CF"));
                 break;
             case 4:
-                holder.itemView.setBackgroundColor(Color.parseColor("#E5D9E4"));
+                //holder.itemView.setBackgroundColor(Color.parseColor("#E5D9E4"));
+                holder.tarjeta.setCardBackgroundColor(Color.parseColor("#E5D9E4"));
                 break;
 
         }
@@ -154,6 +159,7 @@ public class recuerdoAdapter extends RecyclerView.Adapter<recuerdoAdapter.recuer
         private ImageView imagen;
         private ImageButton bBorrar;
         private CheckBox bFavorito;
+        private CardView tarjeta;
 
         public recuerdoViewHolder(@NonNull View itemView){
             super(itemView);
@@ -164,6 +170,8 @@ public class recuerdoAdapter extends RecyclerView.Adapter<recuerdoAdapter.recuer
             imagen=(ImageView)itemView.findViewById(R.id.tarjetaImagen);
             bFavorito=(CheckBox) itemView.findViewById(R.id.botonFavorito);
             idRegistro=(TextView) itemView.findViewById(R.id.txtIdRegistro);
+            tarjeta=itemView.findViewById(R.id.tarjeta);
+
 
 
 
