@@ -13,10 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -240,7 +238,7 @@ public class NuevoRecuerdoActivity extends AppCompatActivity {
                         finish();
                     }
                 } else if (!(modoEdicion)) {
-                    if (mViewModel.guardar(mTitulo.getText().toString(), mComentarios.getText().toString(),mEtiquetas.getText().toString(), mTipoRecuerdoNombre)){
+                    if (mViewModel.guardarRecuerdo(mTitulo.getText().toString(), mComentarios.getText().toString(),mEtiquetas.getText().toString(), mTipoRecuerdoNombre)){
                         finish();
                     }
                 }

@@ -6,6 +6,8 @@ import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -52,7 +54,7 @@ public class Utils {
         return etiquetas;
     }
 
-    public Bitmap rotarImagen(Bitmap bitmap, float angulo){
+    public Bitmap rotarImagen(@NonNull Bitmap bitmap, float angulo){
         Matrix matrix=new Matrix();
         matrix.preRotate(angulo);
         Bitmap nuevaImagen=Bitmap.createBitmap(bitmap,0,0,bitmap.getWidth(),bitmap.getHeight(),matrix,true);

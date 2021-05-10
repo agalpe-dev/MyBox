@@ -3,8 +3,13 @@ package com.agp.mybox.Adaptadores;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.agp.mybox.Modelo.POJO.Recurso;
@@ -21,6 +27,8 @@ import com.agp.mybox.Utils.Utils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.graphics.Paint.ANTI_ALIAS_FLAG;
 
 /**
  * Created by Antonio Gálvez on 01/05/2021.
@@ -44,21 +52,42 @@ public class recursoAdapter extends RecyclerView.Adapter<recursoAdapter.recursoV
         return new recursoViewHolder(v);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onBindViewHolder(@NonNull recursoViewHolder holder, int position) {
         Recurso recurso=recursoList.get(position);
         // Leer Recurso y crear miniatura
         // TODO - Discriminar si es bitmap, pdf u otro tipo de archivo
         Uri uri= Uri.parse(recurso.getUri());
-        Bitmap b= null;
-        try {
-            b= MediaStore.Images.Media.getBitmap(context.getContentResolver(),uri);
-            Bitmap miniatura= ThumbnailUtils.extractThumbnail(b,80,80);
-            miniatura=utils.rotarImagen(miniatura,-270);
-            holder.miniatura.setImageBitmap(miniatura);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        // Crear thumbnail según el tipo de Recurso
+        String extension=getExtension(uri);
+       switch (extension){
+           case "jpeg":
+           case "bmp":
+           case "png":
+           case "tiff":
+           case "gif":
+               Bitmap b= null;
+               try {
+                   b= MediaStore.Images.Media.getBitmap(context.getContentResolver(),uri);
+                   Bitmap miniatura= ThumbnailUtils.extractThumbnail(b,80,80);
+                   miniatura=utils.rotarImagen(miniatura,-270);
+                   holder.miniatura.setImageBitmap(miniatura);
+               } catch (IOException e) {
+                   e.printStackTrace();
+               }
+               break;
+           case "pdf":
+               holder.miniatura.setImageDrawable(context.getDrawable(R.drawable.tipo_pdf));
+               break;
+           case "plain":
+               holder.miniatura.setImageBitmap(textoABitmap("<TXT>",14));
+               break;
+           default:
+               holder.miniatura.setImageBitmap(textoABitmap(extension.toUpperCase(),14));
+               break;
+       }
+
 
         // Listener para click en imagen. La abre en aplicación por defecto del sistema
         holder.miniatura.setOnClickListener(new View.OnClickListener() {
@@ -98,5 +127,46 @@ public class recursoAdapter extends RecyclerView.Adapter<recursoAdapter.recursoV
             super(itemView);
             miniatura=(ImageView) itemView.findViewById(R.id.imagenMini);
         }
+    }
+
+    // Obtener extensión de URI
+    private String getExtension(Uri uri){
+        String tipo=getTipoArchivo(uri);
+        String[] s=tipo.split("/");
+        String extension=s[1];
+        if (extension.equals("octet-stream")){
+            String ruta=uri.toString().substring(uri.toString().length()-10);
+            if (ruta.contains(".")){
+                extension=ruta.substring(ruta.indexOf(".")+1);
+            }
+        }
+        return extension;
+    }
+
+    // Obtener tipo de Archivo
+    public String getTipoArchivo(Uri uri){
+        String tipo=context.getContentResolver().getType(uri);
+        return tipo;
+    }
+
+
+    // Crear imagen con texto de extensión
+    // https://stackoverflow.com/questions/8799290/convert-string-text-to-bitmap
+    public Bitmap textoABitmap(String texto, float textoSize) {
+        Paint paint = new Paint(ANTI_ALIAS_FLAG);
+        paint.setTextSize(textoSize);
+        paint.setColor(Color.BLACK);
+        paint.setTextAlign(Paint.Align.LEFT);
+        float baseline = -paint.ascent();
+        int width = (int) (paint.measureText(texto) + 0.0f);
+        int height = (int) (baseline + paint.descent() + 0.0f);
+
+        int trueWidth = width;
+        if(width>height)height=width; else width=height;
+        Bitmap image = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+
+        Canvas canvas = new Canvas(image);
+        canvas.drawText(texto, width/2-trueWidth/2, baseline, paint);
+        return image;
     }
 }
