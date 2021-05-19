@@ -5,6 +5,7 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Ignore;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
@@ -15,7 +16,9 @@ import static androidx.room.ForeignKey.CASCADE;
         entity = TipoRecuerdo.class,
         parentColumns = "id",
         childColumns = "idTipoRecuerdo",
-        onDelete = CASCADE)
+        onDelete = CASCADE),
+        indices = {@Index(value= {"idTipoRecuerdo"})}
+
 )
 
 public class Recuerdo implements Serializable {

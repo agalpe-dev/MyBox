@@ -6,6 +6,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".UI.Ajustes.fragment_ajustes">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -15,70 +19,99 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ajustes_confirmacion"
+            android:text="@string/tituloajustes"
             android:textSize="20dp"
             android:textStyle="bold"
             android:background="#CBCCCC"
-            />
+            android:textColor="@android:color/white"/>
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="15dp"
-            android:paddingBottom="20dp"
+            android:paddingBottom="10dp"
             >
             <TextView
-                android:id="@+id/txtActivar"
+                android:id="@+id/txtAvisos"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/ajustes_bt_confirmacion"
+                android:text="@string/ajustes_bt_avisos"
                 android:textStyle="bold"
                 android:textSize="16dp"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.25"
+                app:layout_constraintHorizontal_bias="0.05"
                 />
             <Switch
-                android:id="@+id/boton_avisos"
-                android:layout_width="80dp"
+                android:id="@+id/botonAvisos"
+                android:layout_width="60dp"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@id/txtActivar"
+                app:layout_constraintStart_toEndOf="@id/txtAvisos"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.25"
+                app:layout_constraintHorizontal_bias="0.0"
+                android:theme="@style/botones.ajustes"
+                />
+
+            <TextView
+                android:id="@+id/txtOCR"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ajustes_bt_OCR"
+                android:textStyle="bold"
+                android:textSize="16dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/botonAvisos"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.15"
+                />
+            <Switch
+                android:id="@+id/botonOCR"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/txtOCR"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+                android:shadowColor="@color/colorPrimary"
+                android:theme="@style/botones.ajustes"
                 />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/ajustes_backup"
-                android:textSize="20dp"
-                android:textColor="@android:color/white"
-                android:textStyle="bold"
-                android:background="#CBCCCC"
-                app:layout_constraintTop_toBottomOf="@id/txtActivar"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ajustes_backup"
+            android:textSize="20dp"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:background="#CBCCCC"
+            />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingTop="10dp">
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:paddingBottom="30dp">
 
             <TextView
                 android:id="@+id/txtCrearBackup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/ajustes_crear_backup"
+                android:textSize="16dp"
+                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.1" />
+                app:layout_constraintVertical_bias="0.01" />
 
             <Button
                 android:id="@+id/botonCrearBackup"
@@ -91,9 +124,321 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/txtCrearBackup"
-                app:layout_constraintVertical_bias="0.05" />
+                app:layout_constraintVertical_bias="0.1" />
+
+            <TextView
+                android:id="@+id/avisoBackup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                app:layout_constraintTop_toBottomOf="@id/botonCrearBackup"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:text="Última copia de seguridad creada\n Nombre de archivo - Fecha"
+                app:layout_constraintVertical_bias="0.1"/>
+
+            <TextView
+                android:id="@+id/txtRestaurarBackup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ajustes_restaurar_backup"
+                android:textSize="16dp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/avisoBackup"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintVertical_bias="0.25" />
+
+            <Button
+                android:id="@+id/botonRestaurarBackup"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/boton_selector"
+                android:text="@string/restaurarBackup"
+                android:textColor="@color/colorPrimary"
+                app:layout_constraintTop_toBottomOf="@id/txtRestaurarBackup"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="10dp"
+                 />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ajustes_limpiar"
+            android:textSize="20dp"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:background="#CBCCCC"
+            />
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:orientation="horizontal"
+            android:columnCount="4"
+            android:rowCount="6">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_row="0"
+                android:layout_column="0"
+                android:textSize="16dp"
+                android:textStyle="bold"
+                android:text="Fotos Cámara:"
+                android:paddingEnd="15dp"
+                android:paddingStart="15dp"/>
+
+            <TextView
+                android:id="@+id/txtNFotos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_row="0"
+                android:layout_column="1"
+                android:textSize="16dp"
+                tools:text="xxx archivos"
+                android:paddingEnd="10dp"/>
+            <TextView
+                android:id="@+id/txtTamFotos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_row="0"
+                android:layout_column="2"
+                tools:text="xxx (Mb)"
+                android:paddingEnd="10dp"/>
+            <!--Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_row="0"
+                android:layout_column="3"
+                android:text="@string/borrar"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/boton_selector"
+                android:textColor="@color/colorPrimary"/-->
+            <ImageButton
+                android:id="@+id/btBorrarFotos"
+                android:layout_width="60dp"
+                android:layout_height="30dp"
+                android:layout_row="0"
+                android:layout_column="3"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_gravity="center_horizontal"
+                android:background="@null"
+                app:srcCompat="@drawable/boton_borrar_selector"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_row="1"
+                android:layout_column="0"
+                android:textSize="16dp"
+                android:textStyle="bold"
+                android:text="Imagenes:"
+                android:paddingEnd="15dp"
+                android:paddingStart="15dp"/>
+
+            <TextView
+                android:id="@+id/txtNImagenes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_row="1"
+                android:layout_column="1"
+                android:textSize="16dp"
+                tools:text="xxx archivos"
+                android:paddingEnd="10dp"/>
+            <TextView
+                android:id="@+id/txtTamImagenes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_row="1"
+                android:layout_column="2"
+                tools:text="xxx (Mb)"
+                android:paddingEnd="10dp"/>
+            <!--Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_row="1"
+                android:layout_column="3"
+                android:text="@string/borrar"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/boton_selector"
+                android:textColor="@color/colorPrimary"/-->
+            <ImageButton
+                android:id="@+id/btBorrarImagenes"
+                android:layout_width="60dp"
+                android:layout_height="30dp"
+                android:layout_row="1"
+                android:layout_column="3"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_gravity="center_horizontal"
+                android:background="@null"
+                app:srcCompat="@drawable/boton_borrar_selector"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_row="2"
+                android:layout_column="0"
+                android:textSize="16dp"
+                android:textStyle="bold"
+                android:text="Pdf: "
+                android:paddingEnd="15dp"
+                android:paddingStart="15dp"/>
+
+            <TextView
+                android:id="@+id/txtNPdf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_row="2"
+                android:layout_column="1"
+                android:textSize="16dp"
+                tools:text="xxx archivos"
+                android:paddingEnd="10dp"/>
+
+            <TextView
+                android:id="@+id/txtTamPdf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_row="2"
+                android:layout_column="2"
+                tools:text="xxx (Mb)"
+                android:paddingEnd="10dp"/>
+
+            <!--Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_row="2"
+                android:layout_column="3"
+                android:text="@string/borrar"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/boton_selector"
+                android:textColor="@color/colorPrimary"/-->
+            <ImageButton
+                android:id="@+id/btBorrarPdf"
+                android:layout_width="60dp"
+                android:layout_height="30dp"
+                android:layout_row="2"
+                android:layout_column="3"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_gravity="center_horizontal"
+                android:background="@null"
+                app:srcCompat="@drawable/boton_borrar_selector"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_row="3"
+                android:layout_column="0"
+                android:textSize="16dp"
+                android:textStyle="bold"
+                android:text="Otros archivos: "
+                android:paddingEnd="15dp"
+                android:paddingStart="15dp"/>
+
+            <TextView
+                android:id="@+id/txtNOtros"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_row="3"
+                android:layout_column="1"
+                android:textSize="16dp"
+                tools:text="xxx archivos"
+                android:paddingEnd="10dp"/>
+
+            <TextView
+                android:id="@+id/txtTamOtros"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_row="3"
+                android:layout_column="2"
+                tools:text="xxx (Mb)"
+                android:paddingEnd="10dp"/>
+
+            <!--Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_row="3"
+                android:layout_column="3"
+                android:text="@string/borrar"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/boton_selector"
+                android:textColor="@color/colorPrimary"/-->
+            <ImageButton
+                android:id="@+id/btBorrarOtros"
+                android:layout_width="60dp"
+                android:layout_height="30dp"
+                android:layout_row="3"
+                android:layout_column="3"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_gravity="center_horizontal"
+                android:background="@null"
+                app:srcCompat="@drawable/boton_borrar_selector"
+                />
+
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingVertical="15dp"
+                android:layout_row="5"
+                android:layout_columnSpan="4"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/boton_selector"
+                android:textColor="@color/colorPrimary"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:text="Borrar Todo"/>
+
+        </GridLayout>
+
     </LinearLayout>
+    </ScrollView>
 </FrameLayout>

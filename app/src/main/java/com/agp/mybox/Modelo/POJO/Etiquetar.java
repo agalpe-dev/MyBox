@@ -3,6 +3,7 @@ package com.agp.mybox.Modelo.POJO;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Ignore;
+import androidx.room.Index;
 
 @Entity(tableName ="etiquetar",primaryKeys = {"idRecuerdo", "idEtiqueta"}, foreignKeys =
         {@ForeignKey(
@@ -12,7 +13,8 @@ import androidx.room.Ignore;
             @ForeignKey(
                     entity = Etiqueta.class,
                     parentColumns = "id",
-                    childColumns = "idEtiqueta")}
+                    childColumns = "idEtiqueta")},
+        indices = {@Index(value= {"idEtiqueta"})}
 )
 
 public class Etiquetar {

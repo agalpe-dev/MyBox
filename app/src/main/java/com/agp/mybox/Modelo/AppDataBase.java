@@ -21,7 +21,7 @@ import java.util.concurrent.Executors;
  * agalpe@gmail.com
  */
 @Database(entities = {Etiqueta.class, Etiquetar.class,
-        OCR.class, Recuerdo.class, Recurso.class, TipoRecuerdo.class}, version=1, exportSchema = true)
+        OCR.class, Recuerdo.class, Recurso.class, TipoRecuerdo.class}, version=2, exportSchema = true)
 public abstract class AppDataBase extends RoomDatabase {
     public abstract RecuerdoDAO getRecuerdoDAO();
     public abstract RecursoDAO getRecursoDAO();

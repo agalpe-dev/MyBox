@@ -88,15 +88,17 @@ public class mainActivityViewModel extends AndroidViewModel {
                 File rutaPdf=new File(getApplication().getFilesDir(),"box/pdf");
                 File rutaImagen=new File(getApplication().getFilesDir(),"box/imagen");
                 File rutaOtros=new File(getApplication().getFilesDir(),"box/otros");
+                File rutaBackup=new File(getApplication().getFilesDir(),"box/backup");
                 //ArrayList con las rutas (Archivos)
                 ArrayList<File> rutas=new ArrayList<File>();
                 rutas.add(rutaFotos);
                 rutas.add(rutaPdf);
                 rutas.add(rutaImagen);
                 rutas.add(rutaOtros);
+                rutas.add(rutaBackup);
 
                 // Si las rutas ya existen, finaliza la ejecución
-                if (rutaFotos.exists() && rutaPdf.exists() && rutaImagen.exists() && rutaOtros.exists()) {
+                if (rutaFotos.exists() && rutaPdf.exists() && rutaImagen.exists() && rutaOtros.exists() && rutaBackup.exists()) {
                     return;
                 }
 
@@ -105,15 +107,15 @@ public class mainActivityViewModel extends AndroidViewModel {
                     if(!f.exists()) {
                         try {
                             f.mkdirs();
-                            Log.d("ANTONIO","Creada ruta: "+f.getPath().toString());
+                            // Log.d("ANTONIO","Creada ruta: "+f.getPath().toString());
 
                         } catch (Exception e) {
                             e.printStackTrace();
-                            Log.d("ANTONIO", "Error creando "+f.getPath().toString());
+                            // Log.d("ANTONIO", "Error creando "+f.getPath().toString());
                         }
                     }
                 }
-                Log.d("ANTONIO", "Todas las rutas creadas ok");
+                // Log.d("ANTONIO", "Todas las rutas creadas ok");
             }
         };
         executor.submit(runnable);

@@ -1,0 +1,315 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 2,
+    "identityHash": "b0e2f81521a877b1425014d5eee39d7e",
+    "entities": [
+      {
+        "tableName": "etiqueta",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `etiqueta` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "etiqueta",
+            "columnName": "etiqueta",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "etiquetar",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idRecuerdo` INTEGER NOT NULL, `idEtiqueta` INTEGER NOT NULL, PRIMARY KEY(`idRecuerdo`, `idEtiqueta`), FOREIGN KEY(`idRecuerdo`) REFERENCES `recuerdo`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`idEtiqueta`) REFERENCES `etiqueta`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "fields": [
+          {
+            "fieldPath": "idRecuerdo",
+            "columnName": "idRecuerdo",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idEtiqueta",
+            "columnName": "idEtiqueta",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "idRecuerdo",
+            "idEtiqueta"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_etiquetar_idEtiqueta",
+            "unique": false,
+            "columnNames": [
+              "idEtiqueta"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_etiquetar_idEtiqueta` ON `${TABLE_NAME}` (`idEtiqueta`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "recuerdo",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "idRecuerdo"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "etiqueta",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "idEtiqueta"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "ocr",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `texto` TEXT NOT NULL, `idRecuerdo` INTEGER NOT NULL, FOREIGN KEY(`idRecuerdo`) REFERENCES `recuerdo`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "texto",
+            "columnName": "texto",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idRecuerdo",
+            "columnName": "idRecuerdo",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_ocr_idRecuerdo",
+            "unique": false,
+            "columnNames": [
+              "idRecuerdo"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_ocr_idRecuerdo` ON `${TABLE_NAME}` (`idRecuerdo`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "recuerdo",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "idRecuerdo"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "recuerdo",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `fecha` INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, `titulo` TEXT, `comentario` TEXT, `favorito` INTEGER NOT NULL, `idTipoRecuerdo` INTEGER NOT NULL, FOREIGN KEY(`idTipoRecuerdo`) REFERENCES `tiporecuerdo`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fecha",
+            "columnName": "fecha",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "CURRENT_TIMESTAMP"
+          },
+          {
+            "fieldPath": "titulo",
+            "columnName": "titulo",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "comentario",
+            "columnName": "comentario",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "favorito",
+            "columnName": "favorito",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idTipoRecuerdo",
+            "columnName": "idTipoRecuerdo",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_recuerdo_idTipoRecuerdo",
+            "unique": false,
+            "columnNames": [
+              "idTipoRecuerdo"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_recuerdo_idTipoRecuerdo` ON `${TABLE_NAME}` (`idTipoRecuerdo`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "tiporecuerdo",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "idTipoRecuerdo"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "recurso",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `fecha` INTEGER NOT NULL, `tamano` INTEGER NOT NULL, `uri` TEXT NOT NULL, `idRecuerdo` INTEGER NOT NULL, FOREIGN KEY(`idRecuerdo`) REFERENCES `recuerdo`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fecha",
+            "columnName": "fecha",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tamano",
+            "columnName": "tamano",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "uri",
+            "columnName": "uri",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idRecuerdo",
+            "columnName": "idRecuerdo",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_recurso_idRecuerdo",
+            "unique": false,
+            "columnNames": [
+              "idRecuerdo"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_recurso_idRecuerdo` ON `${TABLE_NAME}` (`idRecuerdo`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "recuerdo",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "idRecuerdo"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "tiporecuerdo",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `tipoRecuerdo` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tipoRecuerdo",
+            "columnName": "tipoRecuerdo",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b0e2f81521a877b1425014d5eee39d7e')"
+    ]
+  }
+}

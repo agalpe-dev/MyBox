@@ -22,8 +22,8 @@
     <string name="radioEntrada">Entrada</string>
     <string name="radioFactura">Factura</string>
     <string name="nuevoRecuerdoActivity">Nuevo Recuerdo</string>
-    <string name="ajustes_confirmacion">Confirmar acciones</string>
-    <string name="ajustes_bt_confirmacion">Activar avisos</string>
+    <string name="tituloajustes">Ajustes Generales</string>
+    <string name="ajustes_bt_avisos">Activar avisos</string>
     <string name="ajustes_backup">Copias de seguridad</string>
     <string name="ajustes_crear_backup">Crear copia de seguridad</string>
     <string name="hacerBackup">Crear Backup</string>
@@ -38,4 +38,8 @@
     <string name="errorActualizarRecuerdo">Error! No se pudo actualizar el recuerdo</string>
     <string name="title_activity_ver_imagen">FullscreenActivity</string>
     <string name="cerrar">Cerrar</string>
+    <string name="ajustes_bt_OCR">Activar OCR</string>
+    <string name="ajustes_restaurar_backup">Restaurar copia de seguridad</string>
+    <string name="restaurarBackup">Restaurar</string>
+    <string name="ajustes_limpiar">Datos Almacenados</string>
 </resources>

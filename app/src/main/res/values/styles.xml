@@ -16,5 +16,9 @@
         <item name="android:background">@color/black_overlay</item>
         <item name="android:buttonBarStyle">?android:attr/buttonBarStyle</item>
     </style>
+    
+    <style name="botones.ajustes" parent="">
+        <item name="android:colorControlActivated">@color/colorPrimary</item>
+    </style>
 
 </resources>

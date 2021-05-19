@@ -4,12 +4,14 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Ignore;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 @Entity (tableName = "ocr", foreignKeys = @ForeignKey(
         entity = Recuerdo.class,
         parentColumns = "id",
-        childColumns = "idRecuerdo")
+        childColumns = "idRecuerdo"),
+        indices = {@Index(value= {"idRecuerdo"})}
 )
 
 public class OCR {

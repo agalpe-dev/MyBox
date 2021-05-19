@@ -127,30 +127,9 @@ public class fragment_inicio extends Fragment implements recuerdoAdapter.ItemCli
         mRV.setLayoutManager(sglm);
         mRV.setAdapter(adaptador);
         itemTouchHelper.attachToRecyclerView(mRV);
-        /*
-        PRUABAS --> A ELIMINAR
-        mRV.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
-            @Override
-            public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
-                View v=rv.findChildViewUnder(e.getX(), e.getY());
-                Toast.makeText(getActivity(),"llega",Toast.LENGTH_LONG).show();
-                return false;
-            }
 
-            @Override
-            public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
-
-            }
-
-            @Override
-            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-
-            }
-        });
-*/
-
-
-
+        // Observer para lista de recuerdos
+        // más arriba se crea el observer para poder usarlo en deslizar el cardview
         mViewModel.getTodosRecuerdos().observe(getActivity(),listaRecuerdos);
 
         /* FUNCIONA BIEN. SE COMENTA PARA PROBAR ARRIBA LO MISMO PERO DECLARANDO EL OBSERVER
