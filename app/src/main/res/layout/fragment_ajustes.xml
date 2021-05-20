@@ -15,12 +15,14 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:paddingTop="0dp"
+
         >
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/tituloajustes"
             android:textSize="20dp"
+            android:paddingStart="10dp"
             android:textStyle="bold"
             android:background="#CBCCCC"
             android:textColor="@android:color/white"/>
@@ -88,6 +90,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/ajustes_backup"
+            android:paddingStart="10dp"
             android:textSize="20dp"
             android:textColor="@android:color/white"
             android:textStyle="bold"
@@ -172,6 +175,7 @@
             android:layout_height="wrap_content"
             android:text="@string/ajustes_limpiar"
             android:textSize="20dp"
+            android:paddingStart="10dp"
             android:textColor="@android:color/white"
             android:textStyle="bold"
             android:background="#CBCCCC"
@@ -199,7 +203,7 @@
                 android:paddingStart="15dp"/>
 
             <TextView
-                android:id="@+id/txtNFotos"
+                android:id="@+id/txtNCamara"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
@@ -210,7 +214,7 @@
                 tools:text="xxx archivos"
                 android:paddingEnd="10dp"/>
             <TextView
-                android:id="@+id/txtTamFotos"
+                android:id="@+id/txtTamCamara"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
@@ -231,13 +235,14 @@
                 android:background="@drawable/boton_selector"
                 android:textColor="@color/colorPrimary"/-->
             <ImageButton
-                android:id="@+id/btBorrarFotos"
+                android:id="@+id/btBorrarCamara"
                 android:layout_width="60dp"
                 android:layout_height="30dp"
                 android:layout_row="0"
                 android:layout_column="3"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
+                android:layout_marginEnd="5dp"
                 android:layout_gravity="center_horizontal"
                 android:background="@null"
                 app:srcCompat="@drawable/boton_borrar_selector"
@@ -257,7 +262,7 @@
                 android:paddingStart="15dp"/>
 
             <TextView
-                android:id="@+id/txtNImagenes"
+                android:id="@+id/txtNImagen"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
@@ -268,7 +273,7 @@
                 tools:text="xxx archivos"
                 android:paddingEnd="10dp"/>
             <TextView
-                android:id="@+id/txtTamImagenes"
+                android:id="@+id/txtTamImagen"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
@@ -289,13 +294,14 @@
                 android:background="@drawable/boton_selector"
                 android:textColor="@color/colorPrimary"/-->
             <ImageButton
-                android:id="@+id/btBorrarImagenes"
+                android:id="@+id/btBorrarImagen"
                 android:layout_width="60dp"
                 android:layout_height="30dp"
                 android:layout_row="1"
                 android:layout_column="3"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
+                android:layout_marginEnd="5dp"
                 android:layout_gravity="center_horizontal"
                 android:background="@null"
                 app:srcCompat="@drawable/boton_borrar_selector"
@@ -356,6 +362,7 @@
                 android:layout_column="3"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
+                android:layout_marginEnd="5dp"
                 android:layout_gravity="center_horizontal"
                 android:background="@null"
                 app:srcCompat="@drawable/boton_borrar_selector"
@@ -416,6 +423,7 @@
                 android:layout_column="3"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
+                android:layout_marginEnd="5dp"
                 android:layout_gravity="center_horizontal"
                 android:background="@null"
                 app:srcCompat="@drawable/boton_borrar_selector"
@@ -423,6 +431,7 @@
 
 
             <Button
+                android:id="@+id/btBorrarTodo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingVertical="15dp"

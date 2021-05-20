@@ -42,4 +42,6 @@
     <string name="ajustes_restaurar_backup">Restaurar copia de seguridad</string>
     <string name="restaurarBackup">Restaurar</string>
     <string name="ajustes_limpiar">Datos Almacenados</string>
+    <string name="avisoBorrarRecursos">Esta operación no se puede revertir, borrará los archivos almacenados y asociados a los recuerdos que haya creado, ¿está seguro?\n\nSi lo desea, puede crear una copia de seguridad previamente para conservarlos.</string>
+    <string name="borrarArchivos">Eliminar archivos</string>
 </resources>
