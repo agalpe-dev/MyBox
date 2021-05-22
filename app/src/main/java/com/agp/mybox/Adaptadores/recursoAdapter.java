@@ -93,8 +93,15 @@ public class recursoAdapter extends RecyclerView.Adapter<recursoAdapter.recursoV
         holder.miniatura.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(Intent.ACTION_VIEW);
+                /*Intent intent=new Intent(Intent.ACTION_VIEW);
                 intent.setDataAndType(uri,"image/jpeg");
+                intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                context.startActivity(intent);*/
+                // Abrir el miniRecuerso con el visor del sistema (imagen, pdf, txt)
+                String tipoMime=context.getContentResolver().getType(Uri.parse(recurso.getUri()));
+                Intent intent=new Intent(Intent.ACTION_VIEW);
+                intent.setDataAndType(Uri.parse(recurso.getUri()),tipoMime);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                 intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 context.startActivity(intent);

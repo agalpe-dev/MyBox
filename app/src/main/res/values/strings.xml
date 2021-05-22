@@ -26,7 +26,7 @@
     <string name="ajustes_bt_avisos">Activar avisos</string>
     <string name="ajustes_backup">Copias de seguridad</string>
     <string name="ajustes_crear_backup">Crear copia de seguridad</string>
-    <string name="hacerBackup">Crear Backup</string>
+    <string name="btHacerBackup">Crear Backup</string>
     <string name="avisoBorrar">¿Estás seguro que deseas eliminar el recuerdo?</string>
     <string name="borrar">Borrar</string>
     <string name="tituloBorrar">Borrar Recuerdo</string>
@@ -44,4 +44,5 @@
     <string name="ajustes_limpiar">Datos Almacenados</string>
     <string name="avisoBorrarRecursos">Esta operación no se puede revertir, borrará los archivos almacenados y asociados a los recuerdos que haya creado, ¿está seguro?\n\nSi lo desea, puede crear una copia de seguridad previamente para conservarlos.</string>
     <string name="borrarArchivos">Eliminar archivos</string>
+    <string name="creando">Creando...</string>
 </resources>

@@ -9,24 +9,33 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.agp.mybox.R;
+import com.agp.mybox.Utils.Utils;
+
+import java.io.IOException;
 
 public class fragment_ajustes extends Fragment {
 
+    private Utils utils=new Utils();
+    private Handler handler=new Handler();
     private FragmentAjustesViewModel mViewModel;
     private Switch swAvisos, swOCR;
-    private TextView mNCamara, mNImagen, mNPdf, mNOtros, mTamCamara, mTamImagen, mTamPdf, mTamOtros;
+    private TextView mNCamara, mNImagen, mNPdf, mNOtros, mTamCamara, mTamImagen, mTamPdf, mTamOtros, mAvisoBackup;
     private ImageButton mBtBorrarCamara, mBtBorrarImagen, mBtBorrarPdf, mBtBorrarOtros;
-    private Button mBtBorrarTodo;
+    private Button mBtBorrarTodo, mBotonCrearBackup;
+    private ProgressBar mProgressBar;
 
     public static fragment_ajustes newInstance() {
         return new fragment_ajustes();
@@ -50,12 +59,18 @@ public class fragment_ajustes extends Fragment {
         mTamImagen =v.findViewById(R.id.txtTamImagen);
         mTamPdf=v.findViewById(R.id.txtTamPdf);
         mTamOtros=v.findViewById(R.id.txtTamOtros);
+        mAvisoBackup=v.findViewById(R.id.avisoBackup);
 
         mBtBorrarCamara=v.findViewById(R.id.btBorrarCamara);
         mBtBorrarImagen =v.findViewById(R.id.btBorrarImagen);
         mBtBorrarPdf=v.findViewById(R.id.btBorrarPdf);
         mBtBorrarOtros=v.findViewById(R.id.btBorrarOtros);
         mBtBorrarTodo=v.findViewById(R.id.btBorrarTodo);
+        mBotonCrearBackup=v.findViewById(R.id.botonCrearBackup);
+
+        mProgressBar=v.findViewById(R.id.barraProgreso);
+
+        mAvisoBackup.setText(mViewModel.checkBackups());
 
         // Listeners de botones para borrar
         mBtBorrarCamara.setOnClickListener(new View.OnClickListener() {
@@ -92,6 +107,48 @@ public class fragment_ajustes extends Fragment {
                 crearAviso("todo");
             }
         });
+
+        mBotonCrearBackup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mProgressBar.setVisibility(View.VISIBLE);
+                mBotonCrearBackup.setEnabled(false);
+                mBotonCrearBackup.setText(R.string.creando);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        String resultado=mViewModel.backupArchivos();
+                        String ts=resultado.substring(3,resultado.lastIndexOf("."));
+                        String fecha=utils.timestampToFecha(Long.parseLong(ts));
+                        Log.d("BACKUP",resultado + " - "+ ts + " - " + fecha);
+                        if (resultado.contains("zip")){
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mAvisoBackup.setText("Última copia de seguridad: "+resultado+".\nCreada el "+fecha);
+                                    mBotonCrearBackup.setEnabled(true);
+                                    mBotonCrearBackup.setText(R.string.btHacerBackup);
+                                    mProgressBar.setVisibility(View.GONE);
+                                }
+                            });
+                        }else {
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mAvisoBackup.setText(resultado);
+                                    mBotonCrearBackup.setEnabled(true);
+                                    mBotonCrearBackup.setText(R.string.btHacerBackup);
+                                    mProgressBar.setVisibility(View.GONE);
+                                }
+                            });
+                        }
+
+
+                    }
+                }).start();
+            }
+        });
+
 
         // Establecer valores de los switchbutton según lo almacenado en SharedPreferences
         swAvisos.setChecked(mViewModel.checkPreferencias("Avisos"));
@@ -158,6 +215,4 @@ public class fragment_ajustes extends Fragment {
                 }).show();
 
     }
-
-
 }

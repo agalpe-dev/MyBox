@@ -7,7 +7,7 @@
         name="pdf"
         path="box/pdf"/>
     <files-path
-        name="imagenes"
+        name="imagen"
         path="box/imagen"/>
     <files-path
         name="otros"

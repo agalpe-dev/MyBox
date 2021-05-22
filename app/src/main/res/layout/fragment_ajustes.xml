@@ -121,7 +121,7 @@
                 android:layout_width="140dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/boton_selector"
-                android:text="@string/hacerBackup"
+                android:text="@string/btHacerBackup"
                 android:textColor="@color/colorPrimary"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -450,4 +450,10 @@
 
     </LinearLayout>
     </ScrollView>
+    <ProgressBar
+        android:id="@+id/barraProgreso"
+        android:layout_width="180dp"
+        android:layout_height="75dp"
+        android:layout_gravity="center_horizontal|center_vertical"
+        android:visibility="gone"/>
 </FrameLayout>
