@@ -99,16 +99,16 @@ public class fragment_inicio extends Fragment implements recuerdoAdapter.ItemCli
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        //acceso a la vista
+        // Acceso a la vista
         final View v=inflater.inflate(R.layout.fragment_inicio,container,false);
 
-        //Intanciar el ViewModel:
-        //AndroidViewModel en lugar de ViewModel pues es necesario pasar el contexto de Application para poder usar
-        //en el ViewModel el Repository ya que este último requiere Application
-        //Creación de ViewModel debe ir junto con el acceso a los componentes o se genera error que impide crear la instacia del ViewModel
+        // Intanciar el ViewModel:
+        // AndroidViewModel en lugar de ViewModel pues es necesario pasar el contexto de Application para poder usar
+        // en el ViewModel el Repository ya que este último requiere Application
+        // Creación de ViewModel debe ir junto con el acceso a los componentes o se genera error que impide crear la instacia del ViewModel
         mViewModel= new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(FragmentInicioViewModel.class);
 
-        //Acceso a FAB que carga Activity para crear nuevo Recuerdo
+        // Acceso a FAB que carga Activity para crear nuevo Recuerdo
         mFAB=(FloatingActionButton) v.findViewById(R.id.boton_crear);
         mFAB.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -2,14 +2,23 @@ package com.agp.mybox.UI.Ajustes;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.core.content.FileProvider;
+import androidx.documentfile.provider.DocumentFile;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.os.Environment;
 import android.os.Handler;
+import android.provider.DocumentsContract;
+import android.provider.DocumentsProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,19 +31,27 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.agp.mybox.R;
+import com.agp.mybox.UI.Backups;
 import com.agp.mybox.Utils.Utils;
 
-import java.io.IOException;
+import java.io.File;
+import java.net.URI;
+import java.util.ArrayList;
+
+import static android.app.Activity.RESULT_OK;
+import static android.provider.DocumentsContract.EXTRA_INITIAL_URI;
 
 public class fragment_ajustes extends Fragment {
 
+    private final int PEDIR_ARCHIVO=1;
+    private final String AUTORIDAD="com.agp.mybox.fileprovider";
     private Utils utils=new Utils();
     private Handler handler=new Handler();
     private FragmentAjustesViewModel mViewModel;
     private Switch swAvisos, swOCR;
     private TextView mNCamara, mNImagen, mNPdf, mNOtros, mTamCamara, mTamImagen, mTamPdf, mTamOtros, mAvisoBackup;
     private ImageButton mBtBorrarCamara, mBtBorrarImagen, mBtBorrarPdf, mBtBorrarOtros;
-    private Button mBtBorrarTodo, mBotonCrearBackup;
+    private Button mBtBorrarTodo, mBotonCrearBackup, mBotonRestaurarBackup;
     private ProgressBar mProgressBar;
 
     public static fragment_ajustes newInstance() {
@@ -67,61 +84,91 @@ public class fragment_ajustes extends Fragment {
         mBtBorrarOtros=v.findViewById(R.id.btBorrarOtros);
         mBtBorrarTodo=v.findViewById(R.id.btBorrarTodo);
         mBotonCrearBackup=v.findViewById(R.id.botonCrearBackup);
+        mBotonRestaurarBackup=v.findViewById(R.id.botonRestaurarBackup);
 
         mProgressBar=v.findViewById(R.id.barraProgreso);
 
+        // Al cargar el fragment se comprueba el último archivo de backup creado
         mAvisoBackup.setText(mViewModel.checkBackups());
 
         // Listeners de botones para borrar
         mBtBorrarCamara.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                crearAviso("camara");
+                crearAvisoBorrar("camara");
             }
         });
 
         mBtBorrarImagen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                crearAviso("imagen");
+                crearAvisoBorrar("imagen");
             }
         });
 
         mBtBorrarPdf.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                crearAviso("pdf");
+                crearAvisoBorrar("pdf");
             }
         });
 
         mBtBorrarOtros.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                crearAviso("otros");
+                crearAvisoBorrar("otros");
             }
         });
 
         mBtBorrarTodo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                crearAviso("todo");
+                crearAvisoBorrar("todo");
             }
         });
 
+        // Acción botón Restaurar backup
+        mBotonRestaurarBackup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Comprobar si existe algún archivo de backup. Si no existe, no se carga la activity y se muestra aviso
+                String hayBackup=mViewModel.checkBackups();
+                if (hayBackup.contains(".zip")) {
+                    Intent intent = new Intent(getActivity(), Backups.class);
+                    File[] files = mViewModel.getFilesFromDir("backup");
+                    ArrayList<String> listaArchivos = new ArrayList<>();
+                    for (File f : files) {
+                        listaArchivos.add(f.getName());
+                    }
+                    intent.putExtra("LISTA_ARCHIVOS", listaArchivos);
+                    startActivityForResult(intent, PEDIR_ARCHIVO);
+                }else{
+                    // No exite ningún archivo de backup
+                    Toast.makeText(getActivity(),"No existen copias de seguridad.",Toast.LENGTH_LONG).show();
+                }
+
+
+            }
+        });
+
+        // Botón CrearBackup
         mBotonCrearBackup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // Activar ProgressBar y cambiar texto del botón
                 mProgressBar.setVisibility(View.VISIBLE);
                 mBotonCrearBackup.setEnabled(false);
                 mBotonCrearBackup.setText(R.string.creando);
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
+                        // backupArchivos devuelve string con el nombre del archivo creado
                         String resultado=mViewModel.backupArchivos();
                         String ts=resultado.substring(3,resultado.lastIndexOf("."));
                         String fecha=utils.timestampToFecha(Long.parseLong(ts));
-                        Log.d("BACKUP",resultado + " - "+ ts + " - " + fecha);
+                        //Log.d("BACKUP",resultado + " - "+ ts + " - " + fecha);
                         if (resultado.contains("zip")){
+                            // Se ejecuta en hilo ppal para poder acceder al interfaz de usuario
                             handler.post(new Runnable() {
                                 @Override
                                 public void run() {
@@ -169,7 +216,7 @@ public class fragment_ajustes extends Fragment {
         });
 
 
-        // Datos de archivos y tamaños por carpetas
+        // Datos de archivos y tamaños por carpetas - Textviews
         mNCamara.setText(mViewModel.getNArchivos("camara"));
         mNImagen.setText(mViewModel.getNArchivos("imagen"));
         mNPdf.setText(mViewModel.getNArchivos("pdf"));
@@ -191,8 +238,19 @@ public class fragment_ajustes extends Fragment {
 
     }
 
+    // Gestionar el nombre del archivo backup seleccionado para restaurar y devuelvo por la activity correspondiente
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode==RESULT_OK && requestCode==PEDIR_ARCHIVO){
+            if (data.getExtras().containsKey("ARCHIVO")){
+                String archivo=data.getExtras().getString("ARCHIVO");
+                crearAviso("Restaurar una copia de seguridad implica eliminar todos los datos actuales de la aplicación.\n\n¿Estás seguro?",archivo);
+            }
+        }
+    }
 
-    private void crearAviso(String carpeta){
+    private void crearAvisoBorrar(String carpeta){
         AlertDialog.Builder dialog= new AlertDialog.Builder(getContext());
         dialog.setTitle(R.string.borrarArchivos);
         dialog.setMessage(R.string.avisoBorrarRecursos);
@@ -200,7 +258,7 @@ public class fragment_ajustes extends Fragment {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 if (carpeta!=null) {
-                    mViewModel.borrarRecursos(carpeta);
+                    mViewModel.borrarRecursos(carpeta,true);
                     // Toast.makeText(getActivity(), "Archivos eliminados", Toast.LENGTH_LONG).show();
                 }else{
                     Toast.makeText(getActivity(), "Hay un problema y no se pueden eliminar los archivos en este momento.\n Vuelve a intentarlo.", Toast.LENGTH_LONG).show();
@@ -213,6 +271,53 @@ public class fragment_ajustes extends Fragment {
                         return;
                     }
                 }).show();
+
+    }
+
+    private void crearAviso(String txt, String archivo){
+        AlertDialog.Builder dialog= new AlertDialog.Builder(getContext());
+        dialog.setTitle(R.string.aviso);
+        dialog.setMessage(txt);
+        dialog.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                restaurarBackup(archivo);
+            }
+        })
+                .setNegativeButton(R.string.boton_cancelar, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                }).show();
+    }
+
+    private void restaurarBackup(String archivo){
+        //TODO Eliminar archivos backups
+        mProgressBar.setVisibility(View.VISIBLE);
+        mBotonRestaurarBackup.setText(R.string.restaurando);
+        mBotonRestaurarBackup.setEnabled(false);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String msj="";
+                if (mViewModel.restaurarBackup(archivo)){
+                    msj="Copia de seguridad restaurada correctamente.";
+                }else{
+                    msj="Error. No se pudo restaurar la copia de seguridad";
+                }
+                String finalMsj = msj;
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getActivity(), finalMsj,Toast.LENGTH_LONG).show();
+                        mProgressBar.setVisibility(View.GONE);
+                        mBotonRestaurarBackup.setText(R.string.restaurarBackup);
+                        mBotonRestaurarBackup.setEnabled(true);
+                    }
+                });
+            }
+        }).start();
 
     }
 }

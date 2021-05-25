@@ -3,6 +3,7 @@ package com.agp.mybox.UI.Favoritos;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -18,11 +19,14 @@ import android.view.ViewGroup;
 import com.agp.mybox.Adaptadores.recuerdoAdapter;
 import com.agp.mybox.Modelo.POJO.Recuerdo;
 import com.agp.mybox.R;
+import com.agp.mybox.UI.NuevoRecuerdoActivity;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
 public class fragment_favoritos extends Fragment implements recuerdoAdapter.ItemClickListener{
 
+    FloatingActionButton mFAB;
     private FragmentFavoritosViewModel mViewModel;
     private RecyclerView mRv;
     private recuerdoAdapter adapter=new recuerdoAdapter(this,getActivity());
@@ -48,9 +52,17 @@ public class fragment_favoritos extends Fragment implements recuerdoAdapter.Item
         mRv.setHasFixedSize(true);
         mRv.setAdapter(adapter);
 
+        // Acceso a FAB que carga Activity para crear nuevo Recuerdo
+        mFAB=(FloatingActionButton) v.findViewById(R.id.boton_crear_fav);
+        mFAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Navigation.findNavController(v).navigate(R.id.fragment_nuevoRecuerdo);
+                startActivity(new Intent(getActivity(), NuevoRecuerdoActivity.class));
+            }
+        });
 
-
-        //observar el livedata que proporciona el viewmodel
+        // Observar el livedata que proporciona el viewmodel
         mViewModel.getRecuerdosFavoritos().observe(getActivity(), new Observer<List<Recuerdo>>() {
             @Override
             public void onChanged(List<Recuerdo> recuerdos) {
@@ -75,7 +87,7 @@ public class fragment_favoritos extends Fragment implements recuerdoAdapter.Item
         });
 
 
-        //devolución de la vista
+        // Devolución de la vista
         return v;
     }
 

@@ -1,17 +1,23 @@
 package com.agp.mybox.UI.Ajustes;
 
+import android.app.AlertDialog;
 import android.app.Application;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.core.content.FileProvider;
 import androidx.lifecycle.AndroidViewModel;
 
+import com.agp.mybox.R;
 import com.agp.mybox.Utils.Utils;
 
 import java.io.BufferedInputStream;
@@ -21,6 +27,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
@@ -28,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 public class FragmentAjustesViewModel extends AndroidViewModel {
@@ -64,10 +72,20 @@ public class FragmentAjustesViewModel extends AndroidViewModel {
 
     public File[] getFilesFromDir(String carpeta){
         File [] files;
-        File f = new File(getApplication().getFilesDir(),"box/"+carpeta);
-        if (f.exists() && f.isDirectory()){
-            files=f.listFiles();
-            return files;
+        // Carpetas de "Files" (camara, pdf, etc...)
+        if (carpeta.length()<10) {
+            File f = new File(getApplication().getFilesDir(), "box/" + carpeta);
+            if (f.exists() && f.isDirectory()) {
+                files = f.listFiles();
+                return files;
+            }
+        }else{
+            // ruta absoluta
+            File f = new File(carpeta);
+            if (f.exists() && f.isDirectory()) {
+                files = f.listFiles();
+                return files;
+            }
         }
         return null;
 
@@ -94,7 +112,7 @@ public class FragmentAjustesViewModel extends AndroidViewModel {
         return "0 Mb";
     }
 
-    public void borrarRecursos(String carpeta) {
+    public void borrarRecursos(String carpeta, boolean avisos) {
         if (carpeta=="todo"){
             borrarTodosRecursos();
         }
@@ -114,22 +132,26 @@ public class FragmentAjustesViewModel extends AndroidViewModel {
                         }
                     }
 
-                    // Para acceder al hilo principal y poner el Toast
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(getApplication(), "Archivos de \"" + carpeta.toUpperCase() +"\" eliminados correctamente", Toast.LENGTH_LONG).show();
-                        }
-                    });
+                    // Para acceder al hilo principal y poner el Toast si hay que mostrar avisos
+                    if (avisos) {
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getApplication(), "Archivos de \"" + carpeta.toUpperCase() + "\" eliminados correctamente", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
                 }
                 // nada que borrar
                 else{
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(getApplication(), "¡No hay archivos que borrar!", Toast.LENGTH_LONG).show();
-                        }
-                    });
+                    if (avisos) {
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getApplication(), "¡No hay archivos que borrar!", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
                 }
             }
         }).start();
@@ -137,10 +159,11 @@ public class FragmentAjustesViewModel extends AndroidViewModel {
     }
 
     public void borrarTodosRecursos(){
-        borrarRecursos("camara");
-        borrarRecursos("imagen");
-        borrarRecursos("pdf");
-        borrarRecursos("otros");
+        borrarRecursos("camara",false);
+        borrarRecursos("imagen",false);
+        borrarRecursos("pdf", false);
+        borrarRecursos("otros", false);
+        Toast.makeText(getApplication(),"¡Todos los arhivos borrados!", Toast.LENGTH_LONG).show();
     }
 
     public String  backupArchivos() {
@@ -155,7 +178,8 @@ public class FragmentAjustesViewModel extends AndroidViewModel {
         listaArchivos.addAll(Arrays.asList(getFilesFromDir("otros")));
 
         // Añadir archivo de base de datos
-        listaArchivos.add(getApplication().getDatabasePath("base_datos"));
+        //listaArchivos.add(getApplication().getDatabasePath("base_datos"));
+        listaArchivos.addAll(Arrays.asList(getFilesFromDir(getApplication().getDataDir()+File.separator+"databases")));
 
         BufferedInputStream bufferedInputStream=null;
         ZipOutputStream zipOutputStream= null;
@@ -212,6 +236,70 @@ public class FragmentAjustesViewModel extends AndroidViewModel {
         return nombreZip;
     }
 
+
+    private boolean restaurarArchivos(String archivo)
+    {
+        File archivoZip=new File(getApplication().getFilesDir()+File.separator+"box"+File.separator+"backup",archivo);
+        InputStream is;
+        ZipInputStream zis;
+        try
+        {
+            String archivoADescomprimir;
+            is = new FileInputStream(archivoZip);
+            zis = new ZipInputStream(new BufferedInputStream(is));
+            ZipEntry ze;
+            byte[] buffer = new byte[1024];
+            int count;
+
+            while ((ze = zis.getNextEntry()) != null)
+            {
+                archivoADescomprimir = ze.getName();
+
+                // Need to create directories if not exists, or
+                // it will generate an Exception...
+                /*if (ze.isDirectory()) {
+                    File fmd = new File(path + archivoUnZip);
+                    fmd.mkdirs();
+                    continue;
+                }*/
+
+                // Comprobar si está descomprimiendo bbdd.
+                if (!archivoADescomprimir.contains("database")) {
+                    // Archivos de recursos
+                    FileOutputStream fout = new FileOutputStream(getApplication().getFilesDir() + File.separator + "box" + File.separator + archivoADescomprimir);
+
+                    while ((count = zis.read(buffer)) != -1) {
+                        fout.write(buffer, 0, count);
+                    }
+
+                    fout.close();
+                    zis.closeEntry();
+                }else{
+                    // Archivo de base de datos
+                    FileOutputStream fout = new FileOutputStream(getApplication().getDataDir()+File.separator+archivoADescomprimir);
+
+                    while ((count = zis.read(buffer)) != -1) {
+                        fout.write(buffer, 0, count);
+                    }
+
+                    fout.close();
+                    zis.closeEntry();
+                }
+
+            }
+
+            zis.close();
+        }
+        catch(IOException e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+
+        return true;
+    }
+
+
     /**
      * Comprueba las copias de seguridad existentes y devuelve la última de ellas
      * @return String con el timestamp más reciente
@@ -238,4 +326,14 @@ public class FragmentAjustesViewModel extends AndroidViewModel {
         return "Sin copias de seguridad.";
     }
 
+    /**
+     * Restaura copia de seguridad comprimida en Zip
+     * @param archivo Archivo a restaurar
+     */
+    public boolean restaurarBackup(String archivo) {
+        borrarTodosRecursos();
+        restaurarArchivos(archivo);
+        return true;
+
+    }
 }

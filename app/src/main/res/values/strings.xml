@@ -45,4 +45,7 @@
     <string name="avisoBorrarRecursos">Esta operación no se puede revertir, borrará los archivos almacenados y asociados a los recuerdos que haya creado, ¿está seguro?\n\nSi lo desea, puede crear una copia de seguridad previamente para conservarlos.</string>
     <string name="borrarArchivos">Eliminar archivos</string>
     <string name="creando">Creando...</string>
+    <string name="txtTituloBackups">Selecciona copia de seguidad</string>
+    <string name="aviso">Aviso</string>
+    <string name="restaurando">Restaurando...</string>
 </resources>

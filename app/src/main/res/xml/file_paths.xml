@@ -12,5 +12,8 @@
     <files-path
         name="otros"
         path="box/otros"/>
+    <files-path
+        name="backup"
+        path="box/backup"/>
 
 </paths>

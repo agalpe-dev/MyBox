@@ -1,12 +1,16 @@
 package com.agp.mybox.Utils;
 
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+
+import com.agp.mybox.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -19,6 +23,9 @@ import java.util.concurrent.TimeUnit;
  * agalpe@gmail.com
  */
 public class Utils {
+    private Context context;
+
+
 
     public long getTimestamp(){
         //long t= TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()); //opción para trabajar con segundos
@@ -61,5 +68,4 @@ public class Utils {
         //bitmap.recycle();
         return nuevaImagen;
     }
-
 }

@@ -17,7 +17,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".UI.ImagenActivity"></activity>
+        <activity android:name=".UI.Backups"></activity>
+        <activity android:name=".UI.ImagenActivity" />
         <activity android:name=".UI.NuevoRecuerdoActivity" />
         <activity android:name=".UI.MainActivity">
             <intent-filter>
@@ -30,9 +31,7 @@
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.agp.mybox.fileprovider"
-
             android:enabled="true"
-
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
