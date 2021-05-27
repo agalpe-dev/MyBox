@@ -5,9 +5,22 @@
     android:layout_height="match_parent"
     tools:context=".UI.Buscar.fragment_buscar">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Buscar" />
+        android:orientation="vertical">
+        <SearchView
+            android:id="@+id/cajaBusqueda"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:iconifiedByDefault="false"
+            android:inputType="text"
+            android:queryHint="Escribe alguna palabra" />
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerBusca"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/tarjeta_recuerdo"/>
+    </LinearLayout>
 </FrameLayout>

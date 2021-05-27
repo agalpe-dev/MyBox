@@ -15,5 +15,8 @@
     <files-path
         name="backup"
         path="box/backup"/>
+    <files-path
+        name="tesseract"
+        path="tesseract"/>
 
 </paths>

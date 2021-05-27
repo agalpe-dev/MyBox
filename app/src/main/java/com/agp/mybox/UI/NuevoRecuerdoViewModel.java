@@ -8,12 +8,16 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.media.ExifInterface;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -28,6 +32,7 @@ import com.agp.mybox.Modelo.POJO.Recuerdo;
 import com.agp.mybox.Modelo.Compuestos.RecursoMini;
 import com.agp.mybox.Modelo.POJO.Recurso;
 import com.agp.mybox.R;
+import com.agp.mybox.Utils.TessOCR;
 import com.agp.mybox.Utils.Utils;
 
 import java.io.File;
@@ -57,7 +62,9 @@ public class NuevoRecuerdoViewModel extends AndroidViewModel {
     private MutableLiveData<String> errorTitulo=new MutableLiveData<>();
     private MutableLiveData<List<RecursoMini>> liveRecursosMini=new MutableLiveData<List<RecursoMini>>();
     private List<RecursoMini> recursosMinis = new ArrayList<RecursoMini>();
-    Utils utils=new Utils();
+    private Utils utils=new Utils();
+    private TessOCR mTessOCR=null;
+    private ArrayList<String> trozos=new ArrayList<String>();
 
     private final String PREFERENCIAS="Preferencias";
     private SharedPreferences mPrefs = getApplication().getSharedPreferences(PREFERENCIAS, Context.MODE_PRIVATE);
@@ -72,7 +79,8 @@ public class NuevoRecuerdoViewModel extends AndroidViewModel {
     /**
      * Método que crea nuevo Recuerdo y lo guarda en base de datos.
      * Se hace una comprobación del título y mediante un observable se comunica con UI en el caso
-     * que esté vacío, lo que anula la creación del Recuerdo y su almacenamiento en BD
+     * que esté vacío, lo que cancela la creación del Recuerdo y su almacenamiento en BD
+     * Se pasan los datos necesarios para crear el Recuerdo desde la intefaz
      * @param titulo
      * @param comentarios
      * @param etiquetas
@@ -106,18 +114,22 @@ public class NuevoRecuerdoViewModel extends AndroidViewModel {
             return true;
         }*/
 
+        // Comprobar que el título no está vacío.
         if(checkTitulo(titulo)){
             int idTipoRecuerdo=mRepository.getTipoRecuerdoID(tiporecuerdo);
 
-            // Creación del nuevo Recuerdo
+            // Creación del nuevo Recuerdo (objeto)
             Recuerdo recuerdo = new Recuerdo(titulo, fecha, comentarios, 0, idTipoRecuerdo);
 
             // Guardar el nuevo Recuerdo en base de datos
             try {
                 mRepository.crearRecuerdo(recuerdo);
 
-                // Crear ArrayList de los recursos. Se obtiene los minirecursos de la lista y se crean
+                // Crear ArrayList de los recursos asociados al recuerdo si existen.
+                // Se obtienen los minirecursos de la lista y se crean
                 // los recursos equivalentes una vez conocido el id del Recuerdo nuevo
+                // Para obtener id del recuerdo recien creado se hace una consulta a la bbdd para busca el id
+                // del ultimo recuerdo guardado (por el fecha, que es el timestamp creado al crear el Recuerdo)
                 if (recursosMinis.size()>0){
                     int idNuevoRecuerdo=0;
                     do{
@@ -125,6 +137,7 @@ public class NuevoRecuerdoViewModel extends AndroidViewModel {
                     } while (idNuevoRecuerdo==0);
 
 
+                    // Lista de Recursos a crear
                     ArrayList<Recurso> recursos=new ArrayList<>();
                     for (RecursoMini rm: recursosMinis){
                         //AssetFileDescriptor fileDescriptor=getApplication().getApplicationContext().getContentResolver().openAssetFileDescriptor(rm.getUri(),"r");
@@ -147,7 +160,8 @@ public class NuevoRecuerdoViewModel extends AndroidViewModel {
         }
     }
 
-    // Comprobar si el titulo dado al recuerdo está vacío o no. No se permite guardar sin un título
+    // Comprobar si el titulo dado al recuerdo está vacío (no se permite guardar sin un título)
+    // Se actualiza el livedata para mostrar aviso en la interfaz
     private boolean checkTitulo(String titulo){
         if (titulo.isEmpty()) {
             errorTitulo.setValue(String.valueOf(R.string.avisoTituloVacio));
@@ -160,12 +174,13 @@ public class NuevoRecuerdoViewModel extends AndroidViewModel {
     }
 
     /**
-     * Devuelve el texto de error en relación al título dado al recuerdo (no puede estar en vacío)
+     * LiveData que devuelve el texto de error en relación al título dado al recuerdo (no puede estar en vacío)
      * @return String con aviso de error
      */
     public LiveData<String> getErrorTitulo(){
         return errorTitulo;
     }
+
 
     // Crear achivo de imagen para guardar la foto tomada con la cámara
     public File crearArchivoImagen() throws IOException{
@@ -173,19 +188,21 @@ public class NuevoRecuerdoViewModel extends AndroidViewModel {
         String nombreArchivo="IMG_"+formato;
         File dir=new File(getApplication().getFilesDir()+"/box/camara");
         File archivo=File.createTempFile(nombreArchivo,".jpg",dir);
-        /* mImagen = archivo.getAbsolutePath(); */
         return archivo;
     }
 
 
     // Crear Recurso para el Recyclerview del Recuerdo
+    // Se discrimina si el parametro Recuerdo es nulo (modo creación Recuerdo, se trabaja con minirecursos)
+    // o no es nulo (modo edición, se cargan los datos de los Recursos asociados al Recuerdo)
+    // Se llama desde onActivityResult la recibir el callback del intent de la Cámara o selector de archivos
     public void crearMiniRecursoLista(Uri uri,String origen, Recuerdo recuerdo){
         // Acción en función del tipo de recurso: foto (foto de la cámara) | archivo (archivo seleccionado)
         // Se recibe Recuerdo para discriminar si estamos en modo edición.
         // Si es hay Recuerdo se crea Recurso y se guarda en BD lo que actualizará el RecyclerView.
         // Si es nulo, estamos en modo creación de Recuerdo y creamos miniRecurso (prescinde del id del Recuerdo como FK ya que aún no lo conocemos)
         switch (origen){
-            // foto creada con la cámara
+            // foto creada con la cámara. Se carga en bitmap y se crea thumbnail
             case "foto":
                 Bitmap bitmap= null;
                 try {
@@ -194,11 +211,11 @@ public class NuevoRecuerdoViewModel extends AndroidViewModel {
                     e.printStackTrace();
                 }
                 Bitmap mini= ThumbnailUtils.extractThumbnail(bitmap,80,80);
-                // Comprobar modo edición
-                if (recuerdo==null) {
+                // Comprobar si estamos modo edición o creación
+                if (recuerdo==null) { // modo creación
                     recursosMinis.add(new RecursoMini(mini, uri));
                     liveRecursosMini.setValue(recursosMinis);
-                }else{ // Modo nuevo recuerdo
+                }else{ // Modo edicion (añadir recurso a Recuerdo ya existente)
                     long fecha=utils.getTimestamp();
                     int id=recuerdo.getId();
                     long size=getFileSize(uri);
@@ -206,6 +223,7 @@ public class NuevoRecuerdoViewModel extends AndroidViewModel {
                     mRepository.crearRecurso(r);
                 }
                 break;
+
            // Archivo seleccionado del equipo
             case "archivo":
                 String tipo=getTipoArchivo(uri);
@@ -243,7 +261,17 @@ public class NuevoRecuerdoViewModel extends AndroidViewModel {
     private void gestionarTipoImagen(Uri uriEntrada, String extension, Recuerdo recuerdo) {
         // Comprobar si hay que hacer OCR o no
         if (mPrefs.getBoolean("OCR",false)) {
-            String txt = hacerOCR(uriEntrada); // implementar en hilo independiente
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    String txt = hacerOCR(uriEntrada, "bitmap");
+                    trocearTXT(txt,255);
+                    Log.d("AGP_OCR", "Hilo: " + txt);
+                    Log.d("AGP_OCR","Trozos: " + Integer.toString(trozos.size()));
+                }
+            }).start();
+
         }
 
         try {
@@ -276,7 +304,7 @@ public class NuevoRecuerdoViewModel extends AndroidViewModel {
     private void gestionarTipoPdf(Uri uriEntrada, String extension, Recuerdo recuerdo){
         // Comprobar si hay que hacer OCR o no
         if (mPrefs.getBoolean("OCR",false)) {
-            String txt = hacerOCR(uriEntrada); // implementar en hilo independiente
+            //String txt = hacerOCR(uriEntrada); // implementar en hilo independiente
         }
 
         // copiar el archivo en las carpetas del sistema
@@ -377,8 +405,73 @@ public class NuevoRecuerdoViewModel extends AndroidViewModel {
         return uriSalida;
     }
 
-    private String hacerOCR(Uri uri) {
-        return "Pendiente de hacer";
+    private String hacerOCR(Uri uri, String tipo) {
+        mTessOCR = new TessOCR(this.getApplication(),"spa");
+        String txt=null;
+        if (tipo=="bitmap"){
+            Bitmap bitmap= null;
+            try {
+                //bitmap = BitmapFactory.decodeFile(MediaStore.Images.Media.getBitmap(getApplication().getContentResolver(),uri));
+                bitmap = MediaStore.Images.Media.getBitmap(getApplication().getContentResolver(), uri);
+                ExifInterface exif=new ExifInterface(getApplication().getContentResolver().openInputStream(uri));
+                int exifOrientacion=exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+
+                int rotar=0;
+                switch (exifOrientacion) {
+                    case ExifInterface.ORIENTATION_ROTATE_90:
+                        rotar = 90;
+                        break;
+                    case ExifInterface.ORIENTATION_ROTATE_180:
+                        rotar = 180;
+                        break;
+                    case ExifInterface.ORIENTATION_ROTATE_270:
+                        rotar = 270;
+                        break;
+                }
+
+                if (rotar!=0){
+                    bitmap = utils.rotarImagen(bitmap,rotar);
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            // Convert to ARGB_8888, required by tess
+            bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+            // Convertir a escala de grises para mejorar resultado OCR
+            bitmap=convertirGris(bitmap);
+            if (bitmap!=null) {
+                txt = mTessOCR.getBitmapOCR(bitmap);
+            }
+        }
+        Log.d("AGP_OCR", "hacerOCR: "+txt);
+        return txt;
+
+    }
+
+    public Bitmap convertirGris(Bitmap bitmap) {
+        // https://stackoverflow.com/questions/3373860/convert-a-bitmap-to-grayscale-in-android
+        int width, height;
+        height = bitmap.getHeight();
+        width = bitmap.getWidth();
+
+        Bitmap bmpGrayscale = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(bmpGrayscale);
+        Paint paint = new Paint();
+        ColorMatrix cm = new ColorMatrix();
+        cm.setSaturation(0);
+        ColorMatrixColorFilter f = new ColorMatrixColorFilter(cm);
+        paint.setColorFilter(f);
+        c.drawBitmap(bitmap, 0, 0, paint);
+        return bmpGrayscale;
+    }
+
+    private void trocearTXT(String txt, int tamano){
+        int contador=0;
+        while (contador<=txt.length()){
+            trozos.add(txt.substring(0,tamano-1));
+            contador+=tamano-1;
+        }
     }
 
     public String getTipoArchivo(Uri uri){
@@ -449,9 +542,18 @@ public class NuevoRecuerdoViewModel extends AndroidViewModel {
 
     // Obtener extensión de URI
     private String getExtension(Uri uri){
+        String extension=null;
         String tipo=getTipoArchivo(uri);
         String[] s=tipo.split("/");
-        return s[1];
+        switch (s[1]){
+            case "msword":
+                extension="doc";
+                break;
+            default:
+                extension=s[1];
+                break;
+        }
+        return extension;
     }
 
     // Crear imagen con texto de extensión

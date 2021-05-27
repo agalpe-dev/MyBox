@@ -1,17 +1,25 @@
 package com.agp.mybox.Utils;
 
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
+import android.net.Uri;
+import android.os.Build;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 
-import com.agp.mybox.R;
-
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -25,6 +33,13 @@ import java.util.concurrent.TimeUnit;
 public class Utils {
     private Context context;
 
+    public Utils(){
+
+    }
+
+    public Utils(Context context){
+        this.context=context;
+    }
 
 
     public long getTimestamp(){
@@ -67,5 +82,24 @@ public class Utils {
         Bitmap nuevaImagen=Bitmap.createBitmap(bitmap,0,0,bitmap.getWidth(),bitmap.getHeight(),matrix,true);
         //bitmap.recycle();
         return nuevaImagen;
+    }
+
+    public boolean copiarArchivo(InputStream in, String destino) {
+        try {
+            OutputStream out = new FileOutputStream(destino);
+            byte[] buffer = new byte[1024];
+            int largo;
+            while ((largo = in.read(buffer)) != -1) {
+                out.write(buffer, 0, largo);
+            }
+            in.close();
+            out.flush();
+            out.close();
+        }
+        catch (IOException e){
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 }

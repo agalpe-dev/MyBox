@@ -48,4 +48,6 @@
     <string name="txtTituloBackups">Selecciona copia de seguidad</string>
     <string name="aviso">Aviso</string>
     <string name="restaurando">Restaurando...</string>
+    <string name="exportar">Exportar</string>
+    <string name="otro">Otro...</string>
 </resources>

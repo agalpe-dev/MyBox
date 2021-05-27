@@ -27,7 +27,9 @@ public class MainActivity extends AppCompatActivity {
 
         mViewModel=new ViewModelProvider(this,new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(mainActivityViewModel.class);
 
+        // Comprueba SharedPreferences y establece valores por defecto
         mViewModel.checkPreferencias();
+
 
         //mViewModel.poblar();
         /*
@@ -56,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
         //Comprobar que la tabla tiporecuerdo tiene los valores por defecto
         mViewModel.comprobarTablaTipos();
 
+        //Pruebas Asset
+        mViewModel.checkDatosOCR();
 
 
     }
