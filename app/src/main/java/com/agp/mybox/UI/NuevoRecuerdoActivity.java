@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,6 +22,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -48,8 +51,11 @@ public class NuevoRecuerdoActivity extends AppCompatActivity {
     private TextInputLayout tilTitulo;
     private RadioGroup mRadioGroup;
     private RadioButton rbTicket, rbFactura, rbEntrada, rbOtros;
+    private ProgressBar mBarraOCR;
     private RecyclerView rv;
+    // Adapter para RV cuando se está en modo creación Recuerdo (se crean miniRecursos)
     private miniRecursoAdapter miniAdapter =new miniRecursoAdapter(this);
+    // Adapter para RV cuando se está en modo edición Recuerdo (se crean Recursos)
     private recursoAdapter recursoAdapter=new recursoAdapter(this);
 
     private Uri fotoUri;
@@ -69,6 +75,7 @@ public class NuevoRecuerdoActivity extends AppCompatActivity {
 
         mViewModel=new ViewModelProvider(this,new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(NuevoRecuerdoViewModel.class);
 
+        // Setear controles
         mTitulo=(TextView)findViewById(R.id.nuevoRecuerdoTitulo);
         mComentarios=(TextView)findViewById(R.id.nuevoRecuerdoTxt);
         mEtiquetas=(TextView)findViewById(R.id.nuevoRecuerdoEtiquetas);
@@ -78,15 +85,24 @@ public class NuevoRecuerdoActivity extends AppCompatActivity {
         rbFactura=(RadioButton)findViewById(R.id.radioFactura);
         rbEntrada=(RadioButton)findViewById(R.id.radioEntrada);
         rbOtros=(RadioButton)findViewById(R.id.radioOtro);
+        mBarraOCR=findViewById(R.id.barraOCR);
 
         botonFoto=(ImageButton)findViewById(R.id.botonFoto);
         botonArchivo=(ImageButton)findViewById(R.id.botonArchivo);
 
+        // Por defecto, se usa el Adapter para miniRecursos (creación de nuevo recuerdo)
         rv=(RecyclerView) findViewById(R.id.rvRecursosmini);
         rv.setLayoutManager(new GridLayoutManager(this,4));
 
+        // Observer para la barra de progreso de OCR
+        mViewModel.estadoOCR().observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                mBarraOCR.setVisibility(integer);
+            }
+        });
 
-        // Comprobar si el intent trae un recuerdo (modo edición)
+        // Comprobar si el intent trae un Recuerdo (modo edición, al pusar en el listado de Recuerdos inicial)
         // Si viene nulo es modo creación nuevo recuerodo
         mRecuerdo=(Recuerdo)getIntent().getSerializableExtra("recuerdo");
 
@@ -96,7 +112,9 @@ public class NuevoRecuerdoActivity extends AppCompatActivity {
             NuevoRecuerdoActivity.this.setTitle(R.string.editarRecuerdoActivity);
             mTitulo.setText(mRecuerdo.getTitulo());
             mComentarios.setText(mRecuerdo.getComentario());
+            // TODO - Mejora: gestionar la consulta la bd de forma asíncrona con Livedata asociando el resultado a los checkboxes
             String txtTipoRecuerdo=mViewModel.getTipoRecuerdoPorId(mRecuerdo.getIdTipoRecuerdo());
+            // Se cambia el Adapter del RV al correspondiente de Recursos ya que se cargan los asociados al Recuerdo (base de datos)
             rv.setAdapter(recursoAdapter); // Adaptador de Recuerdos (cargados de base datos)
 
             switch (txtTipoRecuerdo){
@@ -114,6 +132,7 @@ public class NuevoRecuerdoActivity extends AppCompatActivity {
                     break;
             }
 
+
             // Observer para LiveData con los Recuersos del Recuerdo cargado
             mViewModel.RecursosDeRecuerdo(mRecuerdo.getId()).observe(this, new Observer<List<Recurso>>() {
                 @Override
@@ -123,7 +142,7 @@ public class NuevoRecuerdoActivity extends AppCompatActivity {
             });
 
 
-            // Estamos en modo creación de recuerdo
+            // Estamos en modo creación de recuerdo ya que el Recuerdo es nulo
         }
         else{
             NuevoRecuerdoActivity.this.setTitle(R.string.nuevoRecuerdoActivity);
@@ -223,8 +242,14 @@ public class NuevoRecuerdoActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case android.R.id.home:
-                // Si no se guarda el Recuerdo, se llama a función que borra del disco la fotos creadas
-                mViewModel.borrarRecursos(miniAdapter.getRecursos());
+                // Si no se guarda el Recuerdo:
+                // En modo Creación: se llama a función que borra del disco los miniRecursos creados (aún no están en bd)
+                // En modo Edición: se llama a función que borrar del disco y db Recursos creados.
+                if (modoEdicion){ // Modo edición
+                    mViewModel.borrarRecursos();
+                }else{ // Modo creación
+                    mViewModel.borrarMiniRecursos(miniAdapter.getRecursos());
+                }
                 finish();
                 break;
             case R.id.botonGuardar:
@@ -238,8 +263,32 @@ public class NuevoRecuerdoActivity extends AppCompatActivity {
                         finish();
                     }
                 } else if (!(modoEdicion)) {
-                    if (mViewModel.guardarRecuerdo(mTitulo.getText().toString(), mComentarios.getText().toString(),mEtiquetas.getText().toString(), mTipoRecuerdoNombre)){
-                        finish();
+                    // Se comprueba si se está haciendo OCR en segundo plano. Si es así, se avisa que no se podrá guardar.
+                    // se da la opción de esperar a que finalice OCR o continuar sin guardar OCR.
+                    if (mViewModel.getHaciendoOcr()){
+                        AlertDialog.Builder dialogo = new AlertDialog.Builder(this);
+                        dialogo.setTitle(R.string.aviso);
+                        dialogo.setMessage(R.string.haciendoOCR);
+                        dialogo.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                // Se llama al método para guardar el recuerdo. Allí se vuelve a comprobar si se está haciendo OCR y en caso positivo no se espera a sus resultados
+                                if (mViewModel.guardarRecuerdo(mTitulo.getText().toString(), mComentarios.getText().toString(),mEtiquetas.getText().toString(), mTipoRecuerdoNombre,false)){
+                                    finish();
+                                }
+                            }
+                        })
+                                .setNegativeButton(R.string.boton_cancelar, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        return;
+                                    }
+                                }).show();
+
+                    }else {
+                        if (mViewModel.guardarRecuerdo(mTitulo.getText().toString(), mComentarios.getText().toString(),mEtiquetas.getText().toString(), mTipoRecuerdoNombre, true)){
+                            finish();
+                        }
                     }
                 }
 
@@ -247,6 +296,7 @@ public class NuevoRecuerdoActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 
 
 }

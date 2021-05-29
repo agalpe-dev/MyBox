@@ -4,6 +4,7 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
+import androidx.room.Query;
 import androidx.room.Update;
 
 import com.agp.mybox.Modelo.POJO.OCR;
@@ -18,4 +19,10 @@ public interface OcrDAO {
 
     @Delete
     public void borrarOCR(OCR ocr);
+
+    @Query("DELETE FROM OCR WHERE idRecuerdo = :idrecuerdo")
+    public void borrarOCRdeRecuerdo(int idrecuerdo);
+
+    @Query("DELETE FROM OCR WHERE uriRecurso = :uriRecurso")
+    public void borrarOCRdeUri(String uriRecurso);
 }

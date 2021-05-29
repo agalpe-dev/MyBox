@@ -23,7 +23,7 @@
     <string name="radioFactura">Factura</string>
     <string name="nuevoRecuerdoActivity">Nuevo Recuerdo</string>
     <string name="tituloajustes">Ajustes Generales</string>
-    <string name="ajustes_bt_avisos">Activar avisos</string>
+    <string name="ajustes_bt_avisos">Activar Avisos</string>
     <string name="ajustes_backup">Copias de seguridad</string>
     <string name="ajustes_crear_backup">Crear copia de seguridad</string>
     <string name="btHacerBackup">Crear Backup</string>
@@ -38,7 +38,7 @@
     <string name="errorActualizarRecuerdo">Error! No se pudo actualizar el recuerdo</string>
     <string name="title_activity_ver_imagen">FullscreenActivity</string>
     <string name="cerrar">Cerrar</string>
-    <string name="ajustes_bt_OCR">Activar OCR</string>
+    <string name="ajustes_bt_OCR">Hacer OCR</string>
     <string name="ajustes_restaurar_backup">Restaurar copia de seguridad</string>
     <string name="restaurarBackup">Restaurar</string>
     <string name="ajustes_limpiar">Datos Almacenados</string>
@@ -50,4 +50,6 @@
     <string name="restaurando">Restaurando...</string>
     <string name="exportar">Exportar</string>
     <string name="otro">Otro...</string>
+    <string name="avisoOCR">Al activarse, el reconocimiento de texto se realizará en cada foto, imagen o pdf que se seleccione.\nEsta función conlleva un gran consumo de recursos, según las características de tu dispositivo puede suponer que la aplicación trabaje más lentamente o tengas que esperar un tiempo antes de guardar el Recuerdo que quieras conservar.\n\nSólo se recomienda activar en caso necesario.</string>
+    <string name="haciendoOCR">Está realizando OCR en segundo plano, si guarda ahora el Recuerdo el texto que se pueda reconocer en el archivo adjuntado no se guardará. Si en este momento no le interesa puede continuar.\nSugerencia: si no necesita esta funcionalidad, desactívela en la pantalla de ajustes, ahorrará recursos en su dispositivo.\n\n¿Quiere guardar ahora perdiendo el OCR en curso?</string>
 </resources>

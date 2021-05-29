@@ -51,17 +51,7 @@ public class mainActivityViewModel extends AndroidViewModel {
         mRepository=new MyBoxRepository(application);
     }
 
-    /*
-    * Sólo para pruebas (crear registros para poblar el RecyclerView
-    public void poblar(){
-        mRepository.crearRecuerdo(new Recuerdo("Título 1",1617551190,"Comentarios 1",1,1));
-        mRepository.crearRecuerdo(new Recuerdo("Título 2",1617551190,"Comentarios 2",1,1));
-        mRepository.crearRecuerdo(new Recuerdo("Título 3",1617551190,"Comentarios 3",1,1));
-        mRepository.crearRecuerdo(new Recuerdo("Título 4",1617551190,"Comentarios 4",1,1));
-        mRepository.crearRecuerdo(new Recuerdo("Título 5",1617551190,"Comentarios 5",1,1));
-        mRepository.crearRecuerdo(new Recuerdo("Título 6",1617551190,"Comentarios 6",1,1));
-    }
-    */
+
 
     // Comprobar si existen los tipos de Recuerdo ya que se usan como clave FK para crear cualquier
     // Recuerdo. Solo se ejecutará tras la instalación de la aplicación al estar la tabla vacía.
@@ -180,7 +170,7 @@ public class mainActivityViewModel extends AndroidViewModel {
     public void checkPreferencias() {
         if (!mPrefs.contains("OCR")){
             SharedPreferences.Editor editor=mPrefs.edit();
-            editor.putBoolean("OCR", true);
+            editor.putBoolean("OCR", false);
             editor.commit();
         }
 

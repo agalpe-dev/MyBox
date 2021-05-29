@@ -1,5 +1,6 @@
 package com.agp.mybox.Adaptadores;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -14,7 +15,9 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -24,6 +27,7 @@ import com.agp.mybox.Modelo.POJO.Recurso;
 import com.agp.mybox.R;
 import com.agp.mybox.Utils.Utils;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +66,7 @@ public class recursoAdapter extends RecyclerView.Adapter<recursoAdapter.recursoV
         // Crear thumbnail según el tipo de Recurso
         String extension=getExtension(uri);
        switch (extension){
+           case "jpg":
            case "jpeg":
            case "bmp":
            case "png":
@@ -93,18 +98,18 @@ public class recursoAdapter extends RecyclerView.Adapter<recursoAdapter.recursoV
         holder.miniatura.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*Intent intent=new Intent(Intent.ACTION_VIEW);
-                intent.setDataAndType(uri,"image/jpeg");
-                intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                context.startActivity(intent);*/
                 // Abrir el miniRecuerso con el visor del sistema (imagen, pdf, txt)
                 String tipoMime=context.getContentResolver().getType(Uri.parse(recurso.getUri()));
                 Intent intent=new Intent(Intent.ACTION_VIEW);
                 intent.setDataAndType(Uri.parse(recurso.getUri()),tipoMime);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                 intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                context.startActivity(intent);
+                if (intent.resolveActivity(context.getPackageManager())!=null) {
+                    //context.startActivity(Intent.createChooser(intent, "Elige aplicación"));
+                    context.startActivity(intent);
+                }else{
+                    Toast.makeText(context,"No hay aplicación disponible para este tipo de archivo.",Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -138,6 +143,22 @@ public class recursoAdapter extends RecyclerView.Adapter<recursoAdapter.recursoV
 
     // Obtener extensión de URI
     private String getExtension(Uri uri){
+        String extension;
+
+        // Comprobar esquema del uri
+        if (uri.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
+            // Esquema "content"
+            final MimeTypeMap mime = MimeTypeMap.getSingleton();
+            extension = mime.getExtensionFromMimeType(context.getContentResolver().getType(uri));
+        } else {
+            // Otro esquema
+            extension = MimeTypeMap.getFileExtensionFromUrl(Uri.fromFile(new File(uri.getPath())).toString());
+
+        }
+
+        return extension;
+
+        /* FUNCIONALIDAD BASICA
         String tipo=getTipoArchivo(uri);
         String[] s=tipo.split("/");
         String extension=s[1];
@@ -148,6 +169,8 @@ public class recursoAdapter extends RecyclerView.Adapter<recursoAdapter.recursoV
             }
         }
         return extension;
+
+         */
     }
 
     // Obtener tipo de Archivo

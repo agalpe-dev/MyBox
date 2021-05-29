@@ -10,8 +10,9 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "recurso", foreignKeys = @ForeignKey(
         entity = Recuerdo.class,
         parentColumns = "id",
-        childColumns = "idRecuerdo"),
-        indices = {@Index(value= {"idRecuerdo"})}
+        childColumns = "idRecuerdo",
+        onDelete = ForeignKey.CASCADE),
+        indices = {@Index(value= {"idRecuerdo"})        }
 )
 public class Recurso {
     @PrimaryKey(autoGenerate = true)

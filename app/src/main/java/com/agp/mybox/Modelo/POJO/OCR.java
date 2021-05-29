@@ -10,7 +10,8 @@ import androidx.room.PrimaryKey;
 @Entity (tableName = "ocr", foreignKeys = @ForeignKey(
         entity = Recuerdo.class,
         parentColumns = "id",
-        childColumns = "idRecuerdo"),
+        childColumns = "idRecuerdo",
+        onDelete = ForeignKey.CASCADE),
         indices = {@Index(value= {"idRecuerdo"})}
 )
 
@@ -24,14 +25,27 @@ public class OCR {
     @NonNull
     private int idRecuerdo;
 
+    @NonNull
+    public String getUriRecurso() {
+        return uriRecurso;
+    }
+
+    public void setUriRecurso(@NonNull String uriRecurso) {
+        this.uriRecurso = uriRecurso;
+    }
+
+    @NonNull
+    private String uriRecurso;
+
     public OCR(){
 
     }
 
     @Ignore
-    public OCR(String texto, int idRecuerdo){
+    public OCR(String texto, int idRecuerdo, String uriRecurso){
         this.texto=texto;
         this.idRecuerdo=idRecuerdo;
+        this.uriRecurso=uriRecurso;
     }
 
     public int getId() {

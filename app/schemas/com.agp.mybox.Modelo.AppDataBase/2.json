@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "b0e2f81521a877b1425014d5eee39d7e",
+    "identityHash": "fed3ca2c35d8e5f00a49ccca8825074a",
     "entities": [
       {
         "tableName": "etiqueta",
@@ -91,7 +91,7 @@
       },
       {
         "tableName": "ocr",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `texto` TEXT NOT NULL, `idRecuerdo` INTEGER NOT NULL, FOREIGN KEY(`idRecuerdo`) REFERENCES `recuerdo`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `texto` TEXT NOT NULL, `idRecuerdo` INTEGER NOT NULL, `uriRecurso` TEXT NOT NULL, FOREIGN KEY(`idRecuerdo`) REFERENCES `recuerdo`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -109,6 +109,12 @@
             "fieldPath": "idRecuerdo",
             "columnName": "idRecuerdo",
             "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "uriRecurso",
+            "columnName": "uriRecurso",
+            "affinity": "TEXT",
             "notNull": true
           }
         ],
@@ -131,7 +137,7 @@
         "foreignKeys": [
           {
             "table": "recuerdo",
-            "onDelete": "NO ACTION",
+            "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
             "columns": [
               "idRecuerdo"
@@ -216,7 +222,7 @@
       },
       {
         "tableName": "recurso",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `fecha` INTEGER NOT NULL, `tamano` INTEGER NOT NULL, `uri` TEXT NOT NULL, `idRecuerdo` INTEGER NOT NULL, FOREIGN KEY(`idRecuerdo`) REFERENCES `recuerdo`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `fecha` INTEGER NOT NULL, `tamano` INTEGER NOT NULL, `uri` TEXT NOT NULL, `idRecuerdo` INTEGER NOT NULL, FOREIGN KEY(`idRecuerdo`) REFERENCES `recuerdo`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -268,7 +274,7 @@
         "foreignKeys": [
           {
             "table": "recuerdo",
-            "onDelete": "NO ACTION",
+            "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
             "columns": [
               "idRecuerdo"
@@ -309,7 +315,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b0e2f81521a877b1425014d5eee39d7e')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'fed3ca2c35d8e5f00a49ccca8825074a')"
     ]
   }
 }

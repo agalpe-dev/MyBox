@@ -28,10 +28,6 @@
         android:name="com.agp.mybox.UI.Ajustes.fragment_ajustes"
         android:label="Ajustes"
         tools:layout="@layout/fragment_ajustes" />
-    <fragment
-        android:id="@+id/fragment_nuevoRecuerdo"
-        android:name="com.agp.mybox.UI.Recuerdo.fragment_nuevoRecuerdo"
-        android:label="NuevoRecuerdo"
-        tools:layout="@layout/fragment_nuevo_recuerdo" />
+
 
 </navigation>

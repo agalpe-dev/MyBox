@@ -27,11 +27,11 @@
             android:background="#CBCCCC"
             android:textColor="@android:color/white"/>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="15dp"
-            android:paddingBottom="10dp"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+
             >
             <TextView
                 android:id="@+id/txtAvisos"
@@ -40,21 +40,14 @@
                 android:text="@string/ajustes_bt_avisos"
                 android:textStyle="bold"
                 android:textSize="16dp"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.05"
+                android:layout_marginHorizontal="20dp"
+
                 />
             <Switch
                 android:id="@+id/botonAvisos"
                 android:layout_width="60dp"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@id/txtAvisos"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
                 android:theme="@style/botones.ajustes"
                 />
 
@@ -65,26 +58,19 @@
                 android:text="@string/ajustes_bt_OCR"
                 android:textStyle="bold"
                 android:textSize="16dp"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@id/botonAvisos"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.15"
+                android:layout_marginStart="20dp"
+
                 />
             <Switch
                 android:id="@+id/botonOCR"
                 android:layout_width="60dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@id/txtOCR"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0"
                 android:shadowColor="@color/colorPrimary"
                 android:theme="@style/botones.ajustes"
                 />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
 
         <TextView
             android:layout_width="match_parent"

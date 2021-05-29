@@ -211,6 +211,9 @@ public class fragment_ajustes extends Fragment {
         swOCR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (swOCR.isChecked()){
+                    avisoOCR();
+                }
                 mViewModel.setPreferencias("OCR",swOCR.isChecked());
             }
         });
@@ -292,6 +295,7 @@ public class fragment_ajustes extends Fragment {
                 }).show();
     }
 
+
     private void restaurarBackup(String archivo){
         //TODO Eliminar archivos backups
         mProgressBar.setVisibility(View.VISIBLE);
@@ -318,6 +322,17 @@ public class fragment_ajustes extends Fragment {
                 });
             }
         }).start();
+    }
 
+    private void avisoOCR(){
+        AlertDialog.Builder dialog= new AlertDialog.Builder(getContext());
+        dialog.setTitle(R.string.aviso);
+        dialog.setMessage(R.string.avisoOCR);
+        dialog.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                // Nada que hacer
+            }
+        }).show();
     }
 }

@@ -56,7 +56,13 @@ public class MainActivity extends AppCompatActivity {
         mViewModel.comprobarRutas();
 
         //Comprobar que la tabla tiporecuerdo tiene los valores por defecto
-        mViewModel.comprobarTablaTipos();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mViewModel.comprobarTablaTipos();
+            }
+        }).start();
+
 
         //Pruebas Asset
         mViewModel.checkDatosOCR();

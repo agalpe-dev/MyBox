@@ -101,7 +101,7 @@ public class MyBoxRepository {
           });
     }
 
-    public void crearRecurso(Recurso recurso){
+    public void crearRecurso_bg(Recurso recurso){
           databaseWriteExecutor.execute(new Runnable() {
               @Override
               public void run() {
@@ -110,8 +110,52 @@ public class MyBoxRepository {
           });
     }
 
+    public void crearRecurso(Recurso recurso){
+          mRecursoDAO.insertarRecurso(recurso);
+    }
+
+    public void borrarRecurso(Recurso recurso){
+          databaseWriteExecutor.execute(new Runnable() {
+              @Override
+              public void run() {
+                  mRecursoDAO.borrarRecurso(recurso);
+              }
+          });
+    }
+
+    public void borrarRecursoId(int id){
+          databaseWriteExecutor.execute(new Runnable() {
+              @Override
+              public void run() {
+                  mRecursoDAO.borrarRecursoId(id);
+              }
+          });
+    }
+
+    public void borrarOCRdeRecuerdo (int idrecuerdo){
+          databaseWriteExecutor.execute(new Runnable() {
+              @Override
+              public void run() {
+                  mOcrDAO.borrarOCRdeRecuerdo(idrecuerdo);
+              }
+          });
+    }
+
+    public void borrarOCRdeUri(String uriRecurso){
+          databaseWriteExecutor.execute(new Runnable() {
+              @Override
+              public void run() {
+
+              }
+          });
+    }
+
     public int getLastIdRecuerdo(){
           return mRecuerdoDAO.getLastId();
+    }
+
+    public int getLastIdRecurso(){
+          return mRecursoDAO.getLastId();
     }
 
     public void borrarRecuerdo (Recuerdo recuerdo){
@@ -127,7 +171,13 @@ public class MyBoxRepository {
     }
 
     public void insertarTipoRecuerdo(TipoRecuerdo tipoRecuerdo){
-          mTipoRecuerdoDAO.insertarTipoRecuerdo(tipoRecuerdo);
+          //mTipoRecuerdoDAO.insertarTipoRecuerdo(tipoRecuerdo);
+        databaseWriteExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                mTipoRecuerdoDAO.insertarTipoRecuerdo(tipoRecuerdo);
+            }
+        });
     }
 
     public int totalTiposRecuerdo(){
@@ -152,6 +202,15 @@ public class MyBoxRepository {
 
     public LiveData<List<Recurso>> RecursosDeRecuerdo(int idRecuerdo){
           return mRecursoDAO.RecursosDeRecuerdo(idRecuerdo);
+    }
+
+    public void crearOCR(OCR ocr){
+          databaseWriteExecutor.execute(new Runnable() {
+              @Override
+              public void run() {
+                  mOcrDAO.insertarOCR(ocr);
+              }
+          });
     }
 
 
