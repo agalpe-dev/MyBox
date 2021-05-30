@@ -313,20 +313,45 @@ public class NuevoRecuerdoViewModel extends AndroidViewModel {
                 // evaluar si Recuerdo es nulo para crear miniRecuerdo (creación Recuerdo) o si no lo es, Recuerdo (edición)
                 if (recuerdo == null) {
                     // Leer el contenido del archivo y "trocearlo" para la base de datos.
-                    String contenido=leerArchivoTxt(uriFinal);
-                    if (contenido!=null){
-                        trocearTXT(contenido,255,false);
-                        // la creacióon en bd se hará al guardar el Recuerdo.
-                    }
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            String contenido=leerArchivoTxt(uriFinal);
+                            if (contenido!=null){
+                                trocearTXT(contenido,255,false);
+                                // la creacióon en bd se hará al guardar el Recuerdo.
+                                Bitmap bitmap = textoABitmap(extension,14);
+                                Bitmap mini = ThumbnailUtils.extractThumbnail(bitmap, 80, 80);
+                                recursosMinis.add(new RecursoMini(mini, uriFinal));
+                                liveRecursosMini.postValue(recursosMinis);
+                            }
+                        }
+                    }).start();
+
                 } else {
                     long fecha = utils.getTimestamp();
-                    int id = recuerdo.getId();
+                    int recuerdoId = recuerdo.getId();
                     long size = getFileSize(uriFinal);
-                    Recurso recurso = new Recurso(fecha, size, uriFinal.toString(), id);
+                    Recurso recurso = new Recurso(fecha, size, uriFinal.toString(), recuerdoId);
                     //mRepository.crearRecurso(r);
                     crearRecursoConIdBd(recurso);
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            String contenido=leerArchivoTxt(uriFinal);
+                            if (contenido!=null){
+                                trocearTXT(contenido,255,true);
+                                if (trozosEdicion.size()>0){
+                                    // Recorrer el ArrayList ir crear el objeto OCR y registro en bd
+                                    for (int i = 0; i < trozosEdicion.size(); i++) {
+                                        OCR mOCR = new OCR(trozosEdicion.get(i), recuerdo.getId(),uriFinal.toString());
+                                        mRepository.crearOCR(mOCR);
+                                    }
+                                }
+                            }
+                        }
+                    }).start();
                 }
-
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -859,7 +884,7 @@ public class NuevoRecuerdoViewModel extends AndroidViewModel {
     }
 
     public String leerArchivoTxt(Uri uri){
-        String contenido=null;
+        String contenido="";
         String archivo=uri.toString().substring(uri.toString().lastIndexOf("/")+1,uri.toString().length());
         File file=new File(RUTA_BOX+"otros"+File.separator+archivo);
         if (file.exists() && !file.isDirectory()){

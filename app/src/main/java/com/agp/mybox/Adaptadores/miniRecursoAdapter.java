@@ -3,6 +3,9 @@ package com.agp.mybox.Adaptadores;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.ExifInterface;
+import android.media.MediaMetadataRetriever;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +18,7 @@ import com.agp.mybox.Modelo.Compuestos.RecursoMini;
 import com.agp.mybox.R;
 import com.agp.mybox.Utils.Utils;
 
+import java.io.FileDescriptor;
 import java.util.ArrayList;
 import java.util.List;
 
