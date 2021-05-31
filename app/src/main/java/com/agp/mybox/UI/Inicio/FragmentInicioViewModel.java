@@ -13,8 +13,13 @@ import androidx.lifecycle.ViewModel;
 import com.agp.mybox.Adaptadores.recuerdoAdapter;
 import com.agp.mybox.Modelo.MyBoxRepository;
 import com.agp.mybox.Modelo.POJO.Recuerdo;
+import com.agp.mybox.Modelo.POJO.Recurso;
+import com.agp.mybox.Utils.Utils;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -23,6 +28,7 @@ public class FragmentInicioViewModel extends AndroidViewModel {
     private recuerdoAdapter adapter;
     //private MutableLiveData<List<Recuerdo>> mRecuerdos;
     private LiveData<List<Recuerdo>> liveRecuerdos;
+    private Utils utils=new Utils();
 
 
 
@@ -46,8 +52,23 @@ public class FragmentInicioViewModel extends AndroidViewModel {
     }
 
     public void borrarRecuerdo(Recuerdo recuerdo){
-        // TODO: borrar recursos asociados en tablas y disco
-        repository.borrarRecuerdo(recuerdo);
+        // TODO: borrar recursos asociados en tablas (ya hecho al usar eliminación en Cascada) y disco
+        //repository.borrarRecuerdo(recuerdo);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<Recurso> listaRecursos=new ArrayList<Recurso>();
+                listaRecursos=repository.listaRecursosRecuerdo(recuerdo.getId());
+                repository.borrarRecuerdo(recuerdo);
+                for (int i=0;i<listaRecursos.size();i++){
+                    String ruta=listaRecursos.get(i).getUri();
+                    File file=new File(getApplication().getFilesDir()+ File.separator+"box"+File.separator + ruta.substring(ruta.lastIndexOf("fileprovider/")+13,ruta.length()));
+                    if (file.exists() && !file.isDirectory()) {
+                        borrarArchivo(file);
+                    }
+                }
+            }
+        }).start();
     }
 
     public void favoritoON(int recuerdoId){
@@ -56,5 +77,13 @@ public class FragmentInicioViewModel extends AndroidViewModel {
 
     public void favoritoOFF(int recuerdoId){
         repository.favoritoOFF(recuerdoId);
+    }
+
+    public void borrarArchivo(File archivo){
+        try {
+            utils.borrarArchivoDisco(archivo);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
     }
 }

@@ -10,6 +10,7 @@ import android.os.Build;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -20,6 +21,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -101,5 +103,17 @@ public class Utils {
             return false;
         }
         return true;
+    }
+
+    public void borrarArchivoDisco(File archivo) throws IOException {
+        // Borrar el archivo del almacenamiento de la aplicación
+        try{
+            archivo.delete();
+        }catch (Exception e){
+            e.printStackTrace();
+            //Toast.makeText(context,"No se ha podido borrar el archivo del almacenamiento.",Toast.LENGTH_SHORT).show();
+            Log.d("AGP", "Error borrar archivo disco al borrar recuerdo");
+        }
+
     }
 }

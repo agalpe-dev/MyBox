@@ -206,6 +206,10 @@ public class MyBoxRepository {
           return mRecursoDAO.RecursosDeRecuerdo(idRecuerdo);
     }
 
+    public List<Recurso> listaRecursosRecuerdo(int idRecuerdo){
+          return mRecursoDAO.listaRecursosRecuerdo(idRecuerdo);
+    }
+
     public void crearOCR(OCR ocr){
           databaseWriteExecutor.execute(new Runnable() {
               @Override
