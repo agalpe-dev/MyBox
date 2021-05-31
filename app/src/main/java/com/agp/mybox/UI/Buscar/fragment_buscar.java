@@ -1,27 +1,34 @@
 package com.agp.mybox.UI.Buscar;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
-import android.widget.Toast;
 
+import com.agp.mybox.Adaptadores.recuerdoAdapter;
+import com.agp.mybox.Modelo.POJO.Recuerdo;
 import com.agp.mybox.R;
+import com.agp.mybox.UI.NuevoRecuerdoActivity;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link fragment_buscar#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class fragment_buscar extends Fragment {
+import java.util.List;
+
+
+public class fragment_buscar extends Fragment implements recuerdoAdapter.ItemClickListener {
 
     private FragmentBuscarViewModel mViewModel;
     private SearchView mCajaBusqueda;
+    private RecyclerView mRv;
+    private recuerdoAdapter adapter=new recuerdoAdapter(this,getActivity());
 
     public fragment_buscar() {
         // Required empty public constructor
@@ -42,23 +49,48 @@ public class fragment_buscar extends Fragment {
 
         mViewModel=new ViewModelProvider(this,new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(FragmentBuscarViewModel.class);
 
-        mCajaBusqueda=v.findViewById(R.id.cajaBusqueda);
+        // Preparar RecyclerView
+        mRv=v.findViewById(R.id.recyclerBusca);
+        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+        llm.setOrientation(LinearLayoutManager.VERTICAL);
+        mRv.setLayoutManager(llm);
+        mRv.setHasFixedSize(true);
+        mRv.setAdapter(adapter);
 
+        mCajaBusqueda=v.findViewById(R.id.cajaBusqueda);
         mCajaBusqueda.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
-                //Toast.makeText(getActivity(),s,Toast.LENGTH_SHORT).show();
-                //TODO buscar en comentarios, OCR, etiquetas y añadir a List y este ViewModel para
+                //TODO añadir busqueda en etiquetas
                 //usarlo como Livedata para el adaptador del Recyclerview.
+
+                String busqueda="%"+s+"%";
+                if (!s.isEmpty()) {
+                    adapter.setmListaRecuerdos(mViewModel.buscador(busqueda));
+                    //Log.d("AGP_BUSCA","Busqueda: "+busqueda);
+                }
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String s) {
+                //al borrar se eliminan los resultados
+                if (s.isEmpty()){
+                    adapter.setmListaRecuerdos(null);
+                }
                 return false;
             }
         });
 
         return v;
+    }
+
+
+    // Cargar los detalles del Recuerdo al pulsar sobre la tarjeta del RecyclerView
+    @Override
+    public void onItemClick(Recuerdo recuerdo) {
+        Intent intent=new Intent(getActivity(), NuevoRecuerdoActivity.class);
+        intent.putExtra("recuerdo", recuerdo);
+        startActivity(intent);
     }
 }

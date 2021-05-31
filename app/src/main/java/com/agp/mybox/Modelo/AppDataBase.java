@@ -29,6 +29,7 @@ public abstract class AppDataBase extends RoomDatabase {
     public abstract EtiquetarDAO getEtiquetarDAO();
     public abstract OcrDAO getOcrDAO();
     public abstract TipoRecuerdoDAO getTipoRecuerdoDAO();
+    public abstract BuscarDAO getBuscarDAO();
 
     /**
     public RecuerdoDAO recuerdoDAO;
@@ -72,61 +73,5 @@ public abstract class AppDataBase extends RoomDatabase {
             }
         }
     return INSTANCE;
-    }
-
-    /*
-    RoomDatabase.Callback cargaInicial=new RoomDatabase.Callback(){
-        @Override
-        public void onCreate(@NonNull SupportSQLiteDatabase db) {
-            super.onCreate(db);
-            Executors.newSingleThreadScheduledExecutor().execute(new Runnable() {
-                @Override
-                public void run() {
-                    getTipoRecuerdoDAO().insertarTipoRecuerdo(new TipoRecuerdo("ticket"));
-                    getTipoRecuerdoDAO().insertarTipoRecuerdo(new TipoRecuerdo("factura"));
-                    getTipoRecuerdoDAO().insertarTipoRecuerdo(new TipoRecuerdo("entrada"));
-                    getTipoRecuerdoDAO().insertarTipoRecuerdo(new TipoRecuerdo("otros"));
-                }
-            });
-        }
-
-        @Override
-        public void onOpen(@NonNull SupportSQLiteDatabase db) {
-            super.onOpen(db);
-            if (getTipoRecuerdoDAO().contar()!=4){
-                Executors.newSingleThreadScheduledExecutor().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        getTipoRecuerdoDAO().borrar();
-                        getTipoRecuerdoDAO().insertarTipoRecuerdo(new TipoRecuerdo("ticket"));
-                        getTipoRecuerdoDAO().insertarTipoRecuerdo(new TipoRecuerdo("factura"));
-                        getTipoRecuerdoDAO().insertarTipoRecuerdo(new TipoRecuerdo("entrada"));
-                        getTipoRecuerdoDAO().insertarTipoRecuerdo(new TipoRecuerdo("otros"));
-                    }
-                });
-            }
-        }
-    };
-*/
-
-
-    private void tiposRecuerdoInicial(){
-        runInTransaction(new Runnable() {
-            @Override
-            public void run() {
-                if(getTipoRecuerdoDAO().contar()<4) {
-                    getTipoRecuerdoDAO().borrar();
-                    ArrayList<TipoRecuerdo> tipos = new ArrayList<TipoRecuerdo>();
-                    tipos.add(new TipoRecuerdo("ticket"));
-                    tipos.add(new TipoRecuerdo("factura"));
-                    tipos.add(new TipoRecuerdo("entrada"));
-                    tipos.add(new TipoRecuerdo("otro"));
-
-                    for (TipoRecuerdo t : tipos) {
-                        getTipoRecuerdoDAO().insertarTipoRecuerdo(t);
-                    }
-                }
-            }
-        });
     }
 }

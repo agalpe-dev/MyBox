@@ -7,7 +7,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +27,6 @@ import com.agp.mybox.R;
 import com.agp.mybox.UI.NuevoRecuerdoActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +43,7 @@ public class fragment_inicio extends Fragment implements recuerdoAdapter.ItemCli
     Observer<List<Recuerdo>> listaRecuerdos=new Observer<List<Recuerdo>>() {
         @Override
         public void onChanged(List<Recuerdo> recuerdos) {
-            adaptador.setRecuerdos(recuerdos);
+            adaptador.setmListaRecuerdos(recuerdos);
             listaTrabajo=recuerdos;
         }
     };
@@ -190,6 +188,7 @@ public class fragment_inicio extends Fragment implements recuerdoAdapter.ItemCli
 
     }
 
+    // Cargar los detalles del Recuerdo al pulsar sobre la tarjeta del RecyclerView
     @Override
     public void onItemClick(Recuerdo recuerdo) {
         // Toast.makeText(getActivity(),"Pulsado: " + recuerdo.getTitulo().toString(),Toast.LENGTH_LONG).show();

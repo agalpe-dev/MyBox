@@ -1,34 +1,23 @@
 package com.agp.mybox.Adaptadores;
 
-import android.app.Application;
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.agp.mybox.Modelo.MyBoxRepository;
 import com.agp.mybox.Modelo.POJO.Recuerdo;
 import com.agp.mybox.R;
-import com.agp.mybox.UI.Inicio.FragmentInicioViewModel;
-import com.agp.mybox.UI.MainActivity;
-import com.agp.mybox.UI.NuevoRecuerdoViewModel;
 import com.agp.mybox.Utils.Utils;
 
 import java.util.ArrayList;
@@ -40,7 +29,7 @@ import java.util.List;
  * agalpe@gmail.com
  */
 public class recuerdoAdapter extends RecyclerView.Adapter<recuerdoAdapter.recuerdoViewHolder> {
-    private List<Recuerdo> recuerdos=new ArrayList<>();
+    private List<Recuerdo> mListaRecuerdos =new ArrayList<>();
     Utils utils=new Utils();
     private MutableLiveData<Integer> favoritoOn= new MutableLiveData<>();
     private MutableLiveData<Integer> favoritoOff=new MutableLiveData<>();
@@ -70,7 +59,7 @@ public class recuerdoAdapter extends RecyclerView.Adapter<recuerdoAdapter.recuer
 
     @Override
     public void onBindViewHolder(@NonNull recuerdoViewHolder holder, int position) {
-        Recuerdo recuerdo=recuerdos.get(position);
+        Recuerdo recuerdo= mListaRecuerdos.get(position);
 
         holder.titulo.setText(recuerdo.getTitulo());
         holder.comentarios.setText(recuerdo.getComentario());
@@ -138,11 +127,11 @@ public class recuerdoAdapter extends RecyclerView.Adapter<recuerdoAdapter.recuer
 
     @Override
     public int getItemCount() {
-        return recuerdos==null ? 0: recuerdos.size();
+        return mListaRecuerdos ==null ? 0: mListaRecuerdos.size();
     }
 
-    public void setRecuerdos(List<Recuerdo> recuerdos){
-        this.recuerdos=recuerdos;
+    public void setmListaRecuerdos(List<Recuerdo> mListaRecuerdos){
+        this.mListaRecuerdos = mListaRecuerdos;
         notifyDataSetChanged();
     }
 

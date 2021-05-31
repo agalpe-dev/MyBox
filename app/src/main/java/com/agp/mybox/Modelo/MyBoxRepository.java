@@ -39,6 +39,7 @@ public class MyBoxRepository {
     private EtiquetarDAO mEtiquetarDAO;
     private OcrDAO mOcrDAO;
     private TipoRecuerdoDAO mTipoRecuerdoDAO;
+    private BuscarDAO mBuscarDAO;
 
     //Variable local para pasar tipo int a metodos que lo necesitan para acceder a los id de los registros
     // Valorar uso para eliminar
@@ -55,6 +56,7 @@ public class MyBoxRepository {
         mEtiquetarDAO=db.getEtiquetarDAO();
         mOcrDAO=db.getOcrDAO();
         mTipoRecuerdoDAO=db.getTipoRecuerdoDAO();
+        mBuscarDAO=db.getBuscarDAO();
 
 
         //Inicialización objetos datos que se expondran con el acceso a los mÃ©todos correspondientes
@@ -211,6 +213,10 @@ public class MyBoxRepository {
                   mOcrDAO.insertarOCR(ocr);
               }
           });
+    }
+
+    public List<Recuerdo> buscarRecuerdos(String palabra){
+          return mBuscarDAO.buscarRecuerdos(palabra);
     }
 
 

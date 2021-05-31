@@ -66,7 +66,7 @@ public class fragment_favoritos extends Fragment implements recuerdoAdapter.Item
         mViewModel.getRecuerdosFavoritos().observe(getActivity(), new Observer<List<Recuerdo>>() {
             @Override
             public void onChanged(List<Recuerdo> recuerdos) {
-                adapter.setRecuerdos(recuerdos);
+                adapter.setmListaRecuerdos(recuerdos);
             }
         });
 
