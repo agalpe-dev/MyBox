@@ -1,6 +1,8 @@
 package com.agp.mybox.UI.Inicio;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Debug;
 import android.widget.Toast;
 
@@ -29,6 +31,8 @@ public class FragmentInicioViewModel extends AndroidViewModel {
     //private MutableLiveData<List<Recuerdo>> mRecuerdos;
     private LiveData<List<Recuerdo>> liveRecuerdos;
     private Utils utils=new Utils();
+    private final String PREFERENCIAS="Preferencias";
+    private SharedPreferences mPrefs = getApplication().getSharedPreferences(PREFERENCIAS, Context.MODE_PRIVATE);
 
 
 
@@ -69,6 +73,12 @@ public class FragmentInicioViewModel extends AndroidViewModel {
                 }
             }
         }).start();
+    }
+
+    public boolean comprobarPreferencia(String preferencia){
+        boolean resultado=false;
+        resultado=mPrefs.getBoolean(preferencia,false);
+        return resultado;
     }
 
     public void favoritoON(int recuerdoId){

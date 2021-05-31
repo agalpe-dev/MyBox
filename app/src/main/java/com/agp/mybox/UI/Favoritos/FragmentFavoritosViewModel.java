@@ -1,6 +1,8 @@
 package com.agp.mybox.UI.Favoritos;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 
 import androidx.annotation.NonNull;
@@ -25,6 +27,8 @@ public class FragmentFavoritosViewModel extends AndroidViewModel {
     private MyBoxRepository repository;
     private LiveData<List<Recuerdo>> liveRecuerdos;
     private Utils utils=new Utils();
+    private final String PREFERENCIAS="Preferencias";
+    private SharedPreferences mPrefs = getApplication().getSharedPreferences(PREFERENCIAS, Context.MODE_PRIVATE);
 
     public FragmentFavoritosViewModel(@NonNull Application application) {
         super(application);
@@ -42,6 +46,12 @@ public class FragmentFavoritosViewModel extends AndroidViewModel {
 
     public void favoritoOFF(int recuerdoId){
         repository.favoritoOFF(recuerdoId);
+    }
+
+    public boolean comprobarPreferencia(String preferencia){
+        boolean resultado=false;
+        resultado=mPrefs.getBoolean(preferencia,false);
+        return resultado;
     }
 
     public void borrarRecuerdo(Recuerdo recuerdo){

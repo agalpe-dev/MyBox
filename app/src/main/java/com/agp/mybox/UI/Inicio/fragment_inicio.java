@@ -4,8 +4,10 @@
 package com.agp.mybox.UI.Inicio;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,6 +41,7 @@ public class fragment_inicio extends Fragment implements recuerdoAdapter.ItemCli
     List<Recuerdo> listaTrabajo = new ArrayList<>();
     CheckBox cbTicket, cbFactura, cbEntrada, cbOtros;
 
+
     // Se incluye aquí para poder hacer uso de ItemTouchHelper y poder gestionar deslizar elemento
     Observer<List<Recuerdo>> listaRecuerdos=new Observer<List<Recuerdo>>() {
         @Override
@@ -64,7 +67,9 @@ public class fragment_inicio extends Fragment implements recuerdoAdapter.ItemCli
 
             // Eliminar a la derecha
             if (direction==ItemTouchHelper.RIGHT){
-                AlertDialog.Builder aviso=new AlertDialog.Builder(getContext());
+                // Comprobar si está activado mostrar avisos
+                if (mViewModel.comprobarPreferencia("Avisos")) {
+                    AlertDialog.Builder aviso = new AlertDialog.Builder(getContext());
                     aviso.setTitle(R.string.tituloBorrar);
                     aviso.setMessage(R.string.avisoBorrar);
                     aviso.setPositiveButton(R.string.borrar, new DialogInterface.OnClickListener() {
@@ -72,7 +77,7 @@ public class fragment_inicio extends Fragment implements recuerdoAdapter.ItemCli
                         public void onClick(DialogInterface dialogInterface, int i) {
                             adaptador.notifyItemRemoved(posicion);
                             // Crear Recuerdo con el recuerdo de lista a eliminar y llamar al ViewHolder
-                            Recuerdo r= listaTrabajo.get(posicion);
+                            Recuerdo r = listaTrabajo.get(posicion);
                             mViewModel.borrarRecuerdo(r);
                         }
                     })
@@ -83,6 +88,12 @@ public class fragment_inicio extends Fragment implements recuerdoAdapter.ItemCli
                                     return;
                                 }
                             }).show();
+                }else{
+                    adaptador.notifyItemRemoved(posicion);
+                    // Crear Recuerdo con el recuerdo de lista a eliminar y llamar al ViewHolder
+                    Recuerdo r = listaTrabajo.get(posicion);
+                    mViewModel.borrarRecuerdo(r);
+                }
 
             }
         }

@@ -4,8 +4,10 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -52,26 +54,33 @@ public class fragment_favoritos extends Fragment implements recuerdoAdapter.Item
 
             // Eliminar a la derecha
             if (direction==ItemTouchHelper.RIGHT){
-                AlertDialog.Builder aviso=new AlertDialog.Builder(getContext());
-                aviso.setTitle(R.string.tituloBorrar);
-                aviso.setMessage(R.string.avisoBorrar);
-                aviso.setPositiveButton(R.string.borrar, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        adapter.notifyItemRemoved(posicion);
-                        // Crear Recuerdo con el recuerdo de lista a eliminar y llamar al ViewHolder
-                        Recuerdo r= listaTrabajo.get(posicion);
-                        mViewModel.borrarRecuerdo(r);
-                    }
-                })
-                        .setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                adapter.notifyDataSetChanged();
-                                return;
-                            }
-                        }).show();
-
+                // Comprobar si está activado mostrar avisos
+                if (mViewModel.comprobarPreferencia("Avisos")) {
+                    AlertDialog.Builder aviso = new AlertDialog.Builder(getContext());
+                    aviso.setTitle(R.string.tituloBorrar);
+                    aviso.setMessage(R.string.avisoBorrar);
+                    aviso.setPositiveButton(R.string.borrar, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            adapter.notifyItemRemoved(posicion);
+                            // Crear Recuerdo con el recuerdo de lista a eliminar y llamar al ViewHolder
+                            Recuerdo r = listaTrabajo.get(posicion);
+                            mViewModel.borrarRecuerdo(r);
+                        }
+                    })
+                            .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    adapter.notifyDataSetChanged();
+                                    return;
+                                }
+                            }).show();
+                }else{
+                    adapter.notifyItemRemoved(posicion);
+                    // Crear Recuerdo con el recuerdo de lista a eliminar y llamar al ViewHolder
+                    Recuerdo r = listaTrabajo.get(posicion);
+                    mViewModel.borrarRecuerdo(r);
+                }
             }
         }
     };
