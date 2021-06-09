@@ -223,6 +223,42 @@ public class MyBoxRepository {
           return mBuscarDAO.buscarRecuerdos(palabra);
     }
 
+    public int getEtiquetaId(String etiqueta){
+          return mEtiquetaDAO.getEtiquetaId(etiqueta);
+    }
+
+    public void crearEtiqueta(Etiqueta etiqueta){
+          mEtiquetaDAO.insertarEtiqueta(etiqueta);
+    }
+
+    public int ultimaEtiqueta(){
+          return mEtiquetaDAO.ultimaEtiqueta();
+    }
+
+    public void etiquetar(int idRecuerdo, int idEtiqueta){
+          databaseWriteExecutor.execute(new Runnable() {
+              @Override
+              public void run() {
+                  mEtiquetarDAO.etiquetar(idRecuerdo,idEtiqueta);
+              }
+          });
+    }
+
+    public void borrarEtiquetaRecuerdo(int idRecuerdo){
+          databaseWriteExecutor.execute(new Runnable() {
+              @Override
+              public void run() {
+                  mEtiquetarDAO.borrarEtiquetadoRecuerdo(idRecuerdo);
+              }
+          });
+    }
+
+    public List<String> EtiquetasDeRecuerdo(int idRecuerdo){
+          return mEtiquetarDAO.etiquetasDeRecuerdo(idRecuerdo);
+    }
+
+
+
 
     public int getId() {
         return id;

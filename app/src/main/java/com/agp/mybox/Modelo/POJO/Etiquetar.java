@@ -18,7 +18,8 @@ import androidx.room.Index;
 )
 
 public class Etiquetar {
-    private int idRecuerdo, idEtiqueta;
+    private int idRecuerdo;
+    private int idEtiqueta;
 
     public Etiquetar(){
 

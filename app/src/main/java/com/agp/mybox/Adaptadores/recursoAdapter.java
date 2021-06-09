@@ -1,7 +1,9 @@
 package com.agp.mybox.Adaptadores;
 
+import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -12,6 +14,7 @@ import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,8 +24,10 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.agp.mybox.Modelo.POJO.Recuerdo;
 import com.agp.mybox.Modelo.POJO.Recurso;
 import com.agp.mybox.R;
 import com.agp.mybox.Utils.Utils;
@@ -94,7 +99,7 @@ public class recursoAdapter extends RecyclerView.Adapter<recursoAdapter.recursoV
        }
 
 
-        // Listener para click en imagen. La abre en aplicación por defecto del sistema
+        // Listener para click en thumbnail de Recurso. La abre en aplicación por defecto del sistema
         holder.miniatura.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -105,13 +110,13 @@ public class recursoAdapter extends RecyclerView.Adapter<recursoAdapter.recursoV
                 intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                 intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 if (intent.resolveActivity(context.getPackageManager())!=null) {
-                    //context.startActivity(Intent.createChooser(intent, "Elige aplicación"));
                     context.startActivity(intent);
                 }else{
                     Toast.makeText(context,"No hay aplicación disponible para este tipo de archivo.",Toast.LENGTH_SHORT).show();
                 }
             }
         });
+       
     }
 
     @Override

@@ -18,7 +18,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".UI.Backups"></activity>
-        <activity android:name=".UI.ImagenActivity" />
         <activity android:name=".UI.NuevoRecuerdoActivity" />
         <activity android:name=".UI.MainActivity">
             <intent-filter>

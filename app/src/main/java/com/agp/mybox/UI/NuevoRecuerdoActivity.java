@@ -63,6 +63,7 @@ public class NuevoRecuerdoActivity extends AppCompatActivity {
     private boolean modoEdicion;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,7 +103,7 @@ public class NuevoRecuerdoActivity extends AppCompatActivity {
             }
         });
 
-        // Comprobar si el intent trae un Recuerdo (modo edición, al pusar en el listado de Recuerdos inicial)
+        // Comprobar si el intent trae un Recuerdo (modo edición, al pasar en el listado de Recuerdos inicial)
         // Si viene nulo es modo creación nuevo recuerodo
         mRecuerdo=(Recuerdo)getIntent().getSerializableExtra("recuerdo");
 
@@ -112,6 +113,7 @@ public class NuevoRecuerdoActivity extends AppCompatActivity {
             NuevoRecuerdoActivity.this.setTitle(R.string.editarRecuerdoActivity);
             mTitulo.setText(mRecuerdo.getTitulo());
             mComentarios.setText(mRecuerdo.getComentario());
+            mEtiquetas.setText(mViewModel.cadenaEtiquetas(mRecuerdo.getId()));
             // TODO - Mejora: gestionar la consulta la bd de forma asíncrona con Livedata asociando el resultado a los checkboxes
             String txtTipoRecuerdo=mViewModel.getTipoRecuerdoPorId(mRecuerdo.getIdTipoRecuerdo());
             // Se cambia el Adapter del RV al correspondiente de Recursos ya que se cargan los asociados al Recuerdo (base de datos)
@@ -142,7 +144,7 @@ public class NuevoRecuerdoActivity extends AppCompatActivity {
             });
 
 
-            // Estamos en modo creación de recuerdo ya que el Recuerdo es nulo
+            // Estamos en modo creación de Recuerdo ya que el Intent no trae ninguno (es nulo)
         }
         else{
             NuevoRecuerdoActivity.this.setTitle(R.string.nuevoRecuerdoActivity);
@@ -244,7 +246,7 @@ public class NuevoRecuerdoActivity extends AppCompatActivity {
             case android.R.id.home:
                 // Si no se guarda el Recuerdo:
                 // En modo Creación: se llama a función que borra del disco los miniRecursos creados (aún no están en bd)
-                // En modo Edición: se llama a función que borrar del disco y db Recursos creados.
+                // En modo Edición: se llama a función que borra del disco y db Recursos creados durante la edición
                 if (modoEdicion){ // Modo edición
                     mViewModel.borrarRecursos();
                 }else{ // Modo creación

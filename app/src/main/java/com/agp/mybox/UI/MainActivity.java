@@ -31,26 +31,11 @@ public class MainActivity extends AppCompatActivity {
         mViewModel.checkPreferencias();
 
 
-        //mViewModel.poblar();
-        /*
-        //Opciones de configuración para bottomBar
-        //No son necesarias al prescindir de bottomBar y usar SmoothBottomBar
-        AppBarConfiguration appBarConfiguration= new AppBarConfiguration.Builder(
-                R.id.fragment_inicio,
-                R.id.fragment_favoritos,
-                R.id.fragment_buscar,
-                R.id.fragment_ajustes).build();
-
-         */
-
         //Recuperar el NavController
         //https://developer.android.com/guide/navigation/navigation-getting-started
         navHostFragment=(NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         navController=navHostFragment.getNavController();
 
-        //Problemas, se usa la forma anterior
-        //navController= Navigation.findNavController(this, R.id.nav_host_fragment);
-        //NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
         //Comprobar que existen las rutas
         mViewModel.comprobarRutas();

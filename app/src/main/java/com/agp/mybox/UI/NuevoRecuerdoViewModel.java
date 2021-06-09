@@ -1,10 +1,8 @@
 package com.agp.mybox.UI;
 
-import android.app.AlertDialog;
 import android.app.Application;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
@@ -32,6 +30,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.agp.mybox.Modelo.MyBoxRepository;
+import com.agp.mybox.Modelo.POJO.Etiqueta;
 import com.agp.mybox.Modelo.POJO.OCR;
 import com.agp.mybox.Modelo.POJO.Recuerdo;
 import com.agp.mybox.Modelo.Compuestos.RecursoMini;
@@ -83,6 +82,9 @@ public class NuevoRecuerdoViewModel extends AndroidViewModel {
     private final String PREFERENCIAS="Preferencias";
     private SharedPreferences mPrefs = getApplication().getSharedPreferences(PREFERENCIAS, Context.MODE_PRIVATE);
 
+    private ArrayList<Etiqueta> listaEtiquetas = new ArrayList<Etiqueta>();
+
+
 
     // Constructor (se instancia el repositorio)
     public NuevoRecuerdoViewModel(@NonNull Application application) {
@@ -105,6 +107,7 @@ public class NuevoRecuerdoViewModel extends AndroidViewModel {
     public boolean guardarRecuerdo(String titulo, String comentarios, String etiquetas, String tiporecuerdo, boolean conOCR) {
 
         long fecha=utils.getTimestamp();
+        int idNuevoRecuerdo=0;
 
         // Comprobar que el título no está vacío.
         if(checkTitulo(titulo)){
@@ -116,6 +119,10 @@ public class NuevoRecuerdoViewModel extends AndroidViewModel {
             // Guardar el nuevo Recuerdo en base de datos
             try {
                 mRepository.crearRecuerdo(recuerdo);
+                // obtener id del nuevo Recuerdo
+                do{
+                    idNuevoRecuerdo = mRepository.getIdRecuerdoPorFecha(fecha);
+                } while (idNuevoRecuerdo==0);
 
                 // Crear ArrayList de los recursos asociados al recuerdo si existen.
                 // Se obtienen los minirecursos de la lista y se crean
@@ -123,10 +130,13 @@ public class NuevoRecuerdoViewModel extends AndroidViewModel {
                 // Para obtener id del recuerdo recien creado se hace una consulta a la bbdd para busca el id
                 // del ultimo recuerdo guardado (por el fecha, que es el timestamp creado al crear el Recuerdo)
                 if (recursosMinis.size()>0){
-                    int idNuevoRecuerdo=0;
+                    // int idNuevoRecuerdo=0;
+
+                    /*
                     do{
                         idNuevoRecuerdo = mRepository.getIdRecuerdoPorFecha(fecha);
                     } while (idNuevoRecuerdo==0);
+                     */
 
 
                     // Lista de Recursos a crear
@@ -148,6 +158,10 @@ public class NuevoRecuerdoViewModel extends AndroidViewModel {
                         }
                     }
                 }
+
+                //Crear etiquetas
+                hacerEtiquetas(etiquetas, idNuevoRecuerdo);
+
 
                 Toast.makeText(getApplication(), R.string.recuerdoGuardado, Toast.LENGTH_SHORT).show();
             } catch (Exception e) {
@@ -218,90 +232,90 @@ public class NuevoRecuerdoViewModel extends AndroidViewModel {
         // Acción en función del tipo de recurso: foto (foto de la cámara) | archivo (archivo seleccionado)
         // Si es hay Recuerdo (modo edición) se crea el Recurso: copia en carpetas de aplicación y se guarda en BD lo que actualizará el RecyclerView (liveData).
         // Si es nulo, estamos en modo creación de nuevo Recuerdo y creamos miniRecurso (prescinde del id del Recuerdo como FK ya que aún no lo conocemos)
-        switch (origen){
+        switch (origen) {
             // foto creada con la cámara. Se carga en bitmap y se crea thumbnail
             case "foto":
-                Bitmap bitmap= null;
+                Bitmap bitmap = null;
                 try {
-                    bitmap = MediaStore.Images.Media.getBitmap(getApplication().getContentResolver(),uri);
+                    bitmap = MediaStore.Images.Media.getBitmap(getApplication().getContentResolver(), uri);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                Bitmap mini= ThumbnailUtils.extractThumbnail(bitmap,80,80);
+                Bitmap mini = ThumbnailUtils.extractThumbnail(bitmap, 80, 80);
 
                 // Comprobar si estamos modo edición o creación
-                if (recuerdo==null) { // modo creación. se crea miniRecurso
+                if (recuerdo == null) { // modo creación. se crea miniRecurso
                     recursosMinis.add(new RecursoMini(mini, uri));
                     liveRecursosMini.setValue(recursosMinis); //Se actualiza el MutableLiveData para mostralo automáticamente en Recyclerview
-                }else{ // Modo edicion (añadir Recurso a Recuerdo ya existente)
+                    // Crear etiquetas
+                } else { // Modo edicion (añadir Recurso a Recuerdo ya existente)
                     // Datos necesarios para crear el Recurso y guardarlo en base de datos
-                    long fecha=utils.getTimestamp();
-                    int recuerdoId=recuerdo.getId();
-                    long size=getFileSize(uri);
+                    long fecha = utils.getTimestamp();
+                    int recuerdoId = recuerdo.getId();
+                    long size = getFileSize(uri);
                     // Se crea el recurso y se guarda en base de datos
-                    Recurso recurso=new Recurso(fecha,size,uri.toString(),recuerdoId);
+                    Recurso recurso = new Recurso(fecha, size, uri.toString(), recuerdoId);
                     crearRecursoConIdBd(recurso);
                 }
 
                 // Hacer OCR si está activo
-                if (mPrefs.getBoolean("OCR",false)) {
+                if (mPrefs.getBoolean("OCR", false)) {
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
                             // Modo edición
-                            if (recuerdo!=null) {
+                            if (recuerdo != null) {
                                 String txt = hacerOCR(uri, "bitmap");
-                                trocearTXT(txt, 250,true);
+                                trocearTXT(txt, 250, true);
                                 if (trozosEdicion.size() > 0) {
                                     // Recorrer el ArrayList ir crear el objeto OCR y registro en bd
                                     for (int i = 0; i < trozosEdicion.size(); i++) {
-                                        OCR mOCR = new OCR(trozosEdicion.get(i), recuerdo.getId(),uri.toString());
+                                        OCR mOCR = new OCR(trozosEdicion.get(i), recuerdo.getId(), uri.toString());
                                         mRepository.crearOCR(mOCR);
                                     }
                                 }
-                            }else{
+                            } else {
                                 // Modo creación
                                 String txt = hacerOCR(uri, "bitmap");
-                                trocearTXT(txt, 250,false);
+                                trocearTXT(txt, 250, false);
                             }
                         }
                     }).start();
                 }
                 break;
 
-           // Archivo seleccionado del equipo
+            // Archivo seleccionado del equipo
             case "archivo":
-                String tipo=getTipoArchivo(uri);
-                switch (tipo){
+                String tipo = getTipoArchivo(uri);
+                switch (tipo) {
                     case "image/jpeg":
-                        gestionarTipoImagen(uri, "jpg",recuerdo);
+                        gestionarTipoImagen(uri, "jpg", recuerdo);
                         break;
                     case "image/gif":
                         gestionarTipoImagen(uri, "gif", recuerdo);
                         break;
                     case "image/tiff":
-                        gestionarTipoImagen(uri, "tif",recuerdo);
+                        gestionarTipoImagen(uri, "tif", recuerdo);
                         break;
                     case "image/bmp":
-                        gestionarTipoImagen(uri,"bmp",recuerdo);
+                        gestionarTipoImagen(uri, "bmp", recuerdo);
                         break;
                     case "image/png":
-                        gestionarTipoImagen(uri, "png",recuerdo);
+                        gestionarTipoImagen(uri, "png", recuerdo);
                         break;
                     case "application/pdf":
                         gestionarTipoPdf(uri, "pdf", recuerdo);
                         break;
                     case "text/plain":
-                        String extension=getExtension(uri);
+                        String extension = getExtension(uri);
                         gestionarTipoTxt(uri, recuerdo, extension);
                         break;
                     default:
                         gestionarTipoOtros(uri, recuerdo);
                         break;
                 }
-                break;
+            break;
         }
-
     }
 
     private void gestionarTipoTxt(Uri uriEntrada, Recuerdo recuerdo, String extension) {
@@ -374,6 +388,7 @@ public class NuevoRecuerdoViewModel extends AndroidViewModel {
                     Bitmap mini = ThumbnailUtils.extractThumbnail(bitmap, 80, 80);
                     recursosMinis.add(new RecursoMini(mini, uriFinal));
                     liveRecursosMini.setValue(recursosMinis);
+                    // Crear etiquetas
                 }else{
                     long fecha=utils.getTimestamp();
                     int id=recuerdo.getId();
@@ -487,6 +502,7 @@ public class NuevoRecuerdoViewModel extends AndroidViewModel {
                                 Bitmap mini = ThumbnailUtils.extractThumbnail(bitmap, 80, 80);
                                 recursosMinis.add(new RecursoMini(bitmap, uriFinal));
                                 liveRecursosMini.postValue(recursosMinis);
+                                // Crear etiquetas
                             }else{
                                 long fecha=utils.getTimestamp();
                                 int id=recuerdo.getId();
@@ -676,6 +692,7 @@ public class NuevoRecuerdoViewModel extends AndroidViewModel {
         return liveRecursosMini;
     }
 
+    // Actualizar Recuerdo desde el modo edición
     public boolean actualizarRecuerdo(String titulo, String comentarios, String etiquetas, String tiporecuerdo, int idRecuerdo) {
         if(checkTitulo(titulo)){
             long fecha=utils.getTimestamp();
@@ -686,6 +703,9 @@ public class NuevoRecuerdoViewModel extends AndroidViewModel {
 
             try {
                 mRepository.actualizarRecuerdo(recuerdo);
+                // Actualizar etiquetas
+                hacerEtiquetas(etiquetas,idRecuerdo);
+
                 Toast.makeText(getApplication(), R.string.recuerdoActualizado, Toast.LENGTH_SHORT).show();
             } catch (Exception e) {
                 Toast.makeText(getApplication(), R.string.errorActualizarRecuerdo, Toast.LENGTH_LONG).show();
@@ -738,25 +758,6 @@ public class NuevoRecuerdoViewModel extends AndroidViewModel {
                 }
             }
         }
-
-            /*
-            Runnable runnable=new Runnable() {
-                @Override
-                public void run() {
-                    for (Recurso r:listaRecursosBorrar){
-                        // Borrar en bd
-                        mRepository.borrarRecurso(r);
-                        // Borrar de disco
-                        String uri=r.getUri();
-                        File f=new File(uri);
-                        if (f.exists() && !f.isDirectory()){
-                            f.delete();
-                        }
-                    }
-                }
-            };
-            executor.submit(runnable);
-            */
     }
 
     public String getTipoRecuerdoPorId(int id){
@@ -791,23 +792,6 @@ public class NuevoRecuerdoViewModel extends AndroidViewModel {
         }
 
         return extension;
-
-        //FUNCIONANDO DE FORMA BASICA
-        /*
-        String extension=null;
-        String tipo=getTipoArchivo(uri);
-        String[] s=tipo.split("/");
-        switch (s[1]){
-            case "msword":
-                extension="doc";
-                break;
-            default:
-                extension=s[1];
-                break;
-        }
-        return extension;
-
-         */
     }
 
     // Crear imagen con texto de extensión
@@ -900,4 +884,84 @@ public class NuevoRecuerdoViewModel extends AndroidViewModel {
         }
         return contenido;
     }
+
+    private void prepararEtiquetas(String txtEtiquetas){
+        if (txtEtiquetas!=null && !txtEtiquetas.isEmpty()){
+            listaEtiquetas.clear();
+            String [] etiquetas=txtEtiquetas.split(" ");
+            for (int i=0;i<etiquetas.length;i++){
+                if (!etiquetas[i].equals(" ") && !etiquetas[i].isEmpty()){
+                    listaEtiquetas.add(new Etiqueta(etiquetas[i]));
+                }
+            }
+        }
+    }
+
+    private void crearEtiquetas(int idRecuerdo){
+        // Recorrer la lista de trabajo y comprobar si ya existe registro de etiqueta en bd
+        if(listaEtiquetas.size()>0 && listaEtiquetas!=null){
+            for (int i=0;i<listaEtiquetas.size();i++){
+                int idEtiqueta=mRepository.getEtiquetaId(listaEtiquetas.get(i).getEtiqueta());
+                // si existe, se asigna id a la etiqueta de la lista
+                if (idEtiqueta>0){
+                    listaEtiquetas.get(i).setId(idEtiqueta);
+                }
+                // si no existe en base de datos, se crea
+                else{
+                    mRepository.crearEtiqueta(listaEtiquetas.get(i));
+                    int id=mRepository.ultimaEtiqueta();
+                    listaEtiquetas.get(i).setId(id);
+                }
+            }
+        }
+
+    }
+
+    private void borrarEtiquetar(int idRecuerdo){
+        mRepository.borrarEtiquetaRecuerdo(idRecuerdo);
+    }
+
+    private void etiquetar (int idRecuerdo){
+        // Recorrer lista de trabajo de etiquetas
+        for (int i=0;i<listaEtiquetas.size();i++){
+            int idEtiqueta=listaEtiquetas.get(i).getId();
+            mRepository.etiquetar(idRecuerdo,idEtiqueta);
+        }
+    }
+
+    public String cadenaEtiquetas (int idRecuerdo){
+        String resultado="";
+        List<String> listado=new ArrayList<>();
+        // obtener listado de etiquetas asignadas al recuerdo
+        listado=mRepository.EtiquetasDeRecuerdo(idRecuerdo);
+        if (listado!=null && listado.size()>0){
+            for (String s:listado){
+                resultado+=s + " ";
+            }
+            //
+            while(resultado.lastIndexOf(" ")==resultado.length()-1){
+                resultado=resultado.substring(0,resultado.length()-1);
+            }
+        }
+        return resultado;
+    }
+
+    private void hacerEtiquetas(String etiquetas, int idRecuerdo){
+        // Limpiar lista de etiquetas de trabajo
+        listaEtiquetas.clear();
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                // Tratar cadena recibida del Textview
+                prepararEtiquetas(etiquetas);
+                // Comprobar y crear etiquetas en base de datos
+                crearEtiquetas(idRecuerdo);
+                // borrar etiquetas que asignadas al Recuerdo
+                borrarEtiquetar(idRecuerdo);
+                // etiquetar el Recuerdo con las nuevas etiquetas
+                etiquetar(idRecuerdo);
+            }
+        });
+    }
+
 }

@@ -3,14 +3,10 @@ package com.agp.mybox.UI.Inicio;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Debug;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.agp.mybox.Adaptadores.recuerdoAdapter;
 import com.agp.mybox.Modelo.MyBoxRepository;
@@ -20,13 +16,12 @@ import com.agp.mybox.Utils.Utils;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class FragmentInicioViewModel extends AndroidViewModel {
-    private MyBoxRepository repository;
+    private MyBoxRepository mRepository;
     private recuerdoAdapter adapter;
     //private MutableLiveData<List<Recuerdo>> mRecuerdos;
     private LiveData<List<Recuerdo>> liveRecuerdos;
@@ -38,8 +33,8 @@ public class FragmentInicioViewModel extends AndroidViewModel {
 
     public FragmentInicioViewModel(@NonNull Application application) {
         super(application);
-        repository=new MyBoxRepository(application);
-        liveRecuerdos = repository.leerTodosRecuerdos();
+        mRepository =new MyBoxRepository(application);
+        liveRecuerdos = mRepository.leerTodosRecuerdos();
     }
 
     public LiveData<List<Recuerdo>> getTodosRecuerdos(){
@@ -47,12 +42,12 @@ public class FragmentInicioViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<Recuerdo>> getRecuerdosPorTipo(int tipo) {
-        liveRecuerdos=repository.leerRecuerdosPorTipo(tipo);
+        liveRecuerdos= mRepository.leerRecuerdosPorTipo(tipo);
         return liveRecuerdos;
     }
 
     public int getIdTipoRecuerdo(String s){
-        return repository.getTipoRecuerdoID(s);
+        return mRepository.getTipoRecuerdoID(s);
     }
 
     public void borrarRecuerdo(Recuerdo recuerdo){
@@ -62,8 +57,11 @@ public class FragmentInicioViewModel extends AndroidViewModel {
             @Override
             public void run() {
                 List<Recurso> listaRecursos=new ArrayList<Recurso>();
-                listaRecursos=repository.listaRecursosRecuerdo(recuerdo.getId());
-                repository.borrarRecuerdo(recuerdo);
+                listaRecursos= mRepository.listaRecursosRecuerdo(recuerdo.getId());
+                // borrar etiquetas
+                borrarEtiquetar(recuerdo.getId());
+
+                mRepository.borrarRecuerdo(recuerdo);
                 for (int i=0;i<listaRecursos.size();i++){
                     String ruta=listaRecursos.get(i).getUri();
                     File file=new File(getApplication().getFilesDir()+ File.separator+"box"+File.separator + ruta.substring(ruta.lastIndexOf("fileprovider/")+13,ruta.length()));
@@ -82,11 +80,11 @@ public class FragmentInicioViewModel extends AndroidViewModel {
     }
 
     public void favoritoON(int recuerdoId){
-        repository.favoritoON(recuerdoId);
+        mRepository.favoritoON(recuerdoId);
     }
 
     public void favoritoOFF(int recuerdoId){
-        repository.favoritoOFF(recuerdoId);
+        mRepository.favoritoOFF(recuerdoId);
     }
 
     public void borrarArchivo(File archivo){
@@ -95,5 +93,9 @@ public class FragmentInicioViewModel extends AndroidViewModel {
         }catch (IOException e){
             e.printStackTrace();
         }
+    }
+
+    private void borrarEtiquetar(int idRecuerdo){
+        mRepository.borrarEtiquetaRecuerdo(idRecuerdo);
     }
 }

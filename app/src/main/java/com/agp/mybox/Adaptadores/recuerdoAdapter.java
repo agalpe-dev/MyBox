@@ -161,9 +161,6 @@ public class recuerdoAdapter extends RecyclerView.Adapter<recuerdoAdapter.recuer
             idRegistro=(TextView) itemView.findViewById(R.id.txtIdRegistro);
             tarjeta=itemView.findViewById(R.id.tarjeta);
 
-
-
-
         }
     }
 

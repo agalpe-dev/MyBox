@@ -39,8 +39,6 @@ public class fragment_inicio extends Fragment implements recuerdoAdapter.ItemCli
     RecyclerView mRV;
     recuerdoAdapter adaptador=new recuerdoAdapter(this, getActivity());
     List<Recuerdo> listaTrabajo = new ArrayList<>();
-    CheckBox cbTicket, cbFactura, cbEntrada, cbOtros;
-
 
     // Se incluye aquí para poder hacer uso de ItemTouchHelper y poder gestionar deslizar elemento
     Observer<List<Recuerdo>> listaRecuerdos=new Observer<List<Recuerdo>>() {
@@ -58,7 +56,6 @@ public class fragment_inicio extends Fragment implements recuerdoAdapter.ItemCli
         public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
             return false;
         }
-
 
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
@@ -94,7 +91,6 @@ public class fragment_inicio extends Fragment implements recuerdoAdapter.ItemCli
                     Recuerdo r = listaTrabajo.get(posicion);
                     mViewModel.borrarRecuerdo(r);
                 }
-
             }
         }
     };
@@ -168,23 +164,6 @@ public class fragment_inicio extends Fragment implements recuerdoAdapter.ItemCli
             @Override
             public void onChanged(Integer integer) {
                 mViewModel.favoritoOFF(integer);
-            }
-        });
-
-        // Gestión de los checkboxes
-        cbTicket=(CheckBox)v.findViewById(R.id.checkTicket);
-        cbFactura=(CheckBox)v.findViewById(R.id.checkFactura);
-        cbEntrada=(CheckBox)v.findViewById(R.id.checkEntrada);
-        cbOtros=(CheckBox)v.findViewById(R.id.checkOtros);
-
-        cbTicket.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (cbTicket.isChecked()){
-                    // Buscar en tabla TiposRecuerdo el id
-                    int i=mViewModel.getIdTipoRecuerdo(cbTicket.getText().toString());
-                    mViewModel.getRecuerdosPorTipo(i);
-                }
             }
         });
 

@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -102,9 +103,10 @@ public class fragment_favoritos extends Fragment implements recuerdoAdapter.Item
 
         //Preparación de RecyclerView
         mRv=(RecyclerView)v.findViewById(R.id.rvFavoritos);
-        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
-        llm.setOrientation(LinearLayoutManager.VERTICAL);
-        mRv.setLayoutManager(llm);
+        //LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+        //llm.setOrientation(LinearLayoutManager.VERTICAL);
+        StaggeredGridLayoutManager sglm=new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
+        mRv.setLayoutManager(sglm);
         mRv.setHasFixedSize(true);
         mRv.setAdapter(adapter);
         itemTouchHelper.attachToRecyclerView(mRv);
