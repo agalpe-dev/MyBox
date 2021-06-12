@@ -693,13 +693,14 @@ public class NuevoRecuerdoViewModel extends AndroidViewModel {
     }
 
     // Actualizar Recuerdo desde el modo edición
-    public boolean actualizarRecuerdo(String titulo, String comentarios, String etiquetas, String tiporecuerdo, int idRecuerdo) {
+    public boolean actualizarRecuerdo(String titulo, String comentarios, String etiquetas, String tiporecuerdo, int idRecuerdo, int favorito) {
         if(checkTitulo(titulo)){
             long fecha=utils.getTimestamp();
             int i=mRepository.getTipoRecuerdoID(tiporecuerdo);
 
             Recuerdo recuerdo = new Recuerdo(titulo, fecha, comentarios, 0, i);
             recuerdo.setId(idRecuerdo);
+            if (favorito>0) { recuerdo.setFavorito(favorito); }
 
             try {
                 mRepository.actualizarRecuerdo(recuerdo);

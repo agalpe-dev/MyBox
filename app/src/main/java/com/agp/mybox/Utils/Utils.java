@@ -45,10 +45,8 @@ public class Utils {
 
 
     public long getTimestamp(){
-        //long t= TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()); //opción para trabajar con segundos
         //devuelve long en milisegundos
         long t= System.currentTimeMillis();
-        Log.d("TiempoSegundos",Long.toString(t));
         return t;
     }
 
@@ -58,12 +56,10 @@ public class Utils {
 
         //comprobar que el long está en milisegundos.
         String s=Long.toString(t);
-        Log.d("TamañoT", Integer.toString(s.length()));
         if (s.length()==10){
             t=TimeUnit.SECONDS.toMillis(t); //convertir segundos a milisegundos
         }
         String date=formato.format(new Date(t));
-        Log.d("TiempoFormato", date);
         return date;
     }
 

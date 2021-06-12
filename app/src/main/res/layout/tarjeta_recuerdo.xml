@@ -31,21 +31,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0" />
-        <!--
-        <ImageButton
-            android:id="@+id/botonFavorito"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:src="@drawable/botonfavorito_off"
-            android:backgroundTintMode="screen"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintVertical_bias="0"
-            app:layout_constraintHorizontal_bias="1"
-            />
-            -->
+
         <CheckBox
             android:id="@+id/botonFavorito"
             android:layout_width="32dp"
@@ -59,18 +45,6 @@
             app:layout_constraintVertical_bias="0"
             />
 
-        <ImageView
-            android:id="@+id/tarjetaImagen"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            app:srcCompat="@drawable/ic_no_photos"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.05"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tarjetaTitulo"
-            app:layout_constraintVertical_bias="0.15"/>
-
         <TextView
             android:id="@+id/tarjetaFecha"
             android:layout_width="wrap_content"
@@ -81,18 +55,18 @@
             android:textSize="12dp"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tarjetaImagen"
+            app:layout_constraintTop_toBottomOf="@id/tarjetaComentarios"
             app:layout_constraintVertical_bias="0.1"
             tools:text="15/12/2021 12:25"/>
 
         <TextView
             android:id="@+id/tarjetaComentarios"
-            android:layout_width="225dp"
+            android:layout_width="match_parent"
             android:layout_height="80dp"
             app:layout_constraintBottom_toTopOf="@id/tarjetaFecha"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.20"
-            app:layout_constraintStart_toEndOf="@id/tarjetaImagen"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tarjetaTitulo" />
 
         <TextView
@@ -105,17 +79,6 @@
             app:layout_constraintTop_toBottomOf="@id/tarjetaComentarios"
             app:layout_constraintVertical_bias="0.1" />
 
-        <TextView
-            android:id="@+id/tarjetaTipoRecuerdo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:rotation="270"
-            android:text="TipoRecuerdo"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
         <TextView
             android:id="@+id/txtIdRegistro"
             android:layout_width="wrap_content"

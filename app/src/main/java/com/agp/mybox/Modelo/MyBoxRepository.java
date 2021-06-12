@@ -219,8 +219,13 @@ public class MyBoxRepository {
           });
     }
 
+
     public List<Recuerdo> buscarRecuerdos(String palabra){
           return mBuscarDAO.buscarRecuerdos(palabra);
+    }
+
+    public LiveData<List<Recuerdo>> buscarRecuerdosLive(String palabra){
+          return mBuscarDAO.buscarRecuerdosLive(palabra);
     }
 
     public int getEtiquetaId(String etiqueta){

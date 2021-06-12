@@ -261,7 +261,7 @@ public class NuevoRecuerdoActivity extends AppCompatActivity {
                 // Se llama al metodo para crear nuevo Recuerdo o actualizar el existente si
                 // estamos en modo edición
                 if (modoEdicion) {
-                    if (mViewModel.actualizarRecuerdo(mTitulo.getText().toString(), mComentarios.getText().toString(),mEtiquetas.getText().toString(), mTipoRecuerdoNombre, mRecuerdo.getId())){
+                    if (mViewModel.actualizarRecuerdo(mTitulo.getText().toString(), mComentarios.getText().toString(),mEtiquetas.getText().toString(), mTipoRecuerdoNombre, mRecuerdo.getId(), mRecuerdo.getFavorito())){
                         finish();
                     }
                 } else if (!(modoEdicion)) {

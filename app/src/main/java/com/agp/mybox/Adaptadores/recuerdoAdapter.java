@@ -156,7 +156,6 @@ public class recuerdoAdapter extends RecyclerView.Adapter<recuerdoAdapter.recuer
             etiquetas=(TextView)itemView.findViewById(R.id.tarjetaEtiquetas);
             comentarios=(TextView)itemView.findViewById(R.id.tarjetaComentarios);
             fecha=(TextView)itemView.findViewById(R.id.tarjetaFecha);
-            imagen=(ImageView)itemView.findViewById(R.id.tarjetaImagen);
             bFavorito=(CheckBox) itemView.findViewById(R.id.botonFavorito);
             idRegistro=(TextView) itemView.findViewById(R.id.txtIdRegistro);
             tarjeta=itemView.findViewById(R.id.tarjeta);

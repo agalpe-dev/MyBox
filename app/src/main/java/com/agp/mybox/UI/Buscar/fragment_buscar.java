@@ -49,6 +49,15 @@ public class fragment_buscar extends Fragment implements recuerdoAdapter.ItemCli
 
         mViewModel=new ViewModelProvider(this,new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(FragmentBuscarViewModel.class);
 
+        // Registrar observer
+        mViewModel.buscadorLive().observe(getActivity(), new Observer<List<Recuerdo>>() {
+            @Override
+            public void onChanged(List<Recuerdo> recuerdos) {
+                adapter.setmListaRecuerdos(recuerdos);
+            }
+        });
+
+
         // Preparar RecyclerView
         mRv=v.findViewById(R.id.recyclerBusca);
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
@@ -61,13 +70,10 @@ public class fragment_buscar extends Fragment implements recuerdoAdapter.ItemCli
         mCajaBusqueda.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
-                //TODO añadir busqueda en etiquetas
-                //usarlo como Livedata para el adaptador del Recyclerview.
-
                 String busqueda="%"+s+"%";
                 if (!s.isEmpty()) {
-                    adapter.setmListaRecuerdos(mViewModel.buscador(busqueda));
-                    //Log.d("AGP_BUSCA","Busqueda: "+busqueda);
+                    //adapter.setmListaRecuerdos(mViewModel.buscador(busqueda)); --> Sin LiveData
+                    mViewModel.setTxtBusqueda(busqueda);
                 }
                 return false;
             }

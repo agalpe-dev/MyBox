@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Looper;
 import android.provider.DocumentsContract;
 import android.provider.DocumentsProvider;
 import android.util.Log;
@@ -304,6 +305,7 @@ public class fragment_ajustes extends Fragment {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                Looper.prepare();
                 String msj="";
                 if (mViewModel.restaurarBackup(archivo)){
                     msj="Copia de seguridad restaurada correctamente.";
